@@ -1,0 +1,14 @@
+
+> breakdownassist-next-api@1.0.0 dev
+> next dev -H 0.0.0.0 -p 3005
+
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3005
+   - Network:      http://0.0.0.0:3005
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 3.2s
+ ○ Compiling /api/health ...
+ ✓ Compiled /api/health in 988ms (290 modules)
+ GET /api/health 200 in 2033ms

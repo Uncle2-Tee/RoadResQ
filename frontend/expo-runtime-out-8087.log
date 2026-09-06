@@ -1,0 +1,39 @@
+
+> breakdownassistapp@1.0.0 web
+> expo start --web --port 8087
+
+env: load .env
+env: export EXPO_PUBLIC_API_URL
+Starting project at C:\Users\Elliot\FinalYearProject\BreakdownAssistApp\frontend
+React Compiler enabled
+Starting Metro Bundler
+Waiting on http://localhost:8087
+Logs for your project will appear below.
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ node_modules\expo-router\node\render.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web node_modules\expo-router\entry.js ▓▓▓▓▓▓░░░░░░░░░░ 42.0% (421/650)
+λ node_modules\expo-router\node\render.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 64.7% (699/869)
+λ Bundling failed 6356ms node_modules\expo-router\node\render.js (1299 modules)
+
+Metro error: Importing native-only module "react-native/Libraries/Utilities/codegenNativeCommands" on web from: node_modules\react-native-maps\lib\MapMarkerNativeComponent.js
+
+Import stack:
+
+ node_modules\react-native-maps\lib\MapMarkerNativeComponent.js
+ | import "react-native/Libraries/Utilities/codegenNativeCommands"
+           ^ Importing react-native internals is not supported on web.
+
+ node_modules\react-native-maps\lib\MapMarker.js
+ | import "./MapMarkerNativeComponent"
+
+ node_modules\react-native-maps\lib\index.js
+ | import "./MapMarker"
+
+ app\mechanic-request.tsx
+ | import "react-native-maps"
+
+ app (require.context)
+
+
+
+Web node_modules\expo-router\entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.8% (1259/1260)

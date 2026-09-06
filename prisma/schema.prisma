@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                     String               @id @default(cuid())
+  name                   String
+  email                  String               @unique
+  phoneNumber            String
+  role                   String
+  passwordHash           String
+  profilePhotoUri        String?
+  activeSessionId        String?              @unique
+  activeSessionStartedAt DateTime?
+  driverRequests         RequestHistory[]     @relation("DriverRequests")
+  mechanicRequests       RequestHistory[]     @relation("MechanicRequests")
+  driverPayments         Payment[]            @relation("DriverPayments")
+  mechanicPayments       Payment[]            @relation("MechanicPayments")
+  mechanicShops          MechanicShop[]       @relation("MechanicShopOwner")
+  towShops               TowShop[]            @relation("TowShopOwner")
+  passwordResetTokens    PasswordResetToken[]
+  pushTokens             PushToken[]
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+
+  @@map("Users")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PushToken {
+  id         String   @id @default(cuid())
+  token      String   @unique
+  platform   String?
+  role       String?
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastSeenAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@index([role])
+  @@index([lastSeenAt])
+}
+
+enum RequestType {
+  SERVICE
+  TOW
+  CALL
+  SMS
+  CHAT
+}
+
+enum RequestStatus {
+  PENDING
+  CONFIRMED
+  ACCEPTED
+  DECLINED
+  CANCELLED
+  CALLED
+  MESSAGED
+  CHAT
+}
+
+enum PaymentMethod {
+  MTN
+  TELECEL
+  AIRTEL
+  PAYSTACK
+  CARD
+  MOBILE_MONEY
+}
+
+enum PaymentStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model RequestHistory {
+  id        String        @id @default(cuid())
+  requestId String        @unique
+  type      RequestType
+  status    RequestStatus @default(PENDING)
+
+  driverId       String?
+  driver         User?   @relation("DriverRequests", fields: [driverId], references: [id], onDelete: SetNull)
+  driverName     String
+  driverPhone    String?
+  driverLocation String?
+
+  mechanicId    String?
+  mechanic      User?   @relation("MechanicRequests", fields: [mechanicId], references: [id], onDelete: SetNull)
+  providerName  String
+  providerPhone String?
+
+  problemDescription String?
+  price              Decimal? @db.Decimal(10, 2)
+  currency           String   @default("GHS")
+  estimatedTime      Int?
+  acceptedBy         String?
+
+  requestedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([mechanicId])
+  @@index([type])
+  @@index([status])
+  @@index([requestedAt])
+}
+
+model MechanicShop {
+  id                     String   @id @default(cuid())
+  shopId                 String   @unique
+  mechanicId             String?
+  mechanic               User?    @relation("MechanicShopOwner", fields: [mechanicId], references: [id], onDelete: SetNull)
+  shopName               String
+  phone                  String
+  location               String
+  specialization         String
+  licenseNumber          String   @unique
+  latitude               Decimal  @db.Decimal(10, 7)
+  longitude              Decimal  @db.Decimal(10, 7)
+  status                 String   @default("active")
+  approvalStatus         String   @default("approved")
+  bankName               String?
+  bankCode               String?
+  accountNumber          String?
+  accountName            String?
+  paystackSubaccountCode String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([mechanicId])
+  @@index([status])
+  @@index([latitude, longitude])
+  @@map("MechanicShops")
+}
+
+model TowShop {
+  id                     String   @id @default(cuid())
+  shopId                 String   @unique
+  mechanicId             String?
+  mechanic               User?    @relation("TowShopOwner", fields: [mechanicId], references: [id], onDelete: SetNull)
+  shopName               String
+  phone                  String
+  location               String
+  specialization         String
+  licenseNumber          String   @unique
+  latitude               Decimal  @db.Decimal(10, 7)
+  longitude              Decimal  @db.Decimal(10, 7)
+  status                 String   @default("active")
+  approvalStatus         String   @default("approved")
+  bankName               String?
+  bankCode               String?
+  accountNumber          String?
+  accountName            String?
+  paystackSubaccountCode String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([mechanicId])
+  @@index([status])
+  @@index([latitude, longitude])
+  @@map("TowShops")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  paymentId     String        @unique
+  reference     String?       @unique
+  method        PaymentMethod
+  phoneNumber   String?
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("GHS")
+  status        PaymentStatus @default(PROCESSING)
+  releaseStatus String        @default("pending")
+  releasedAt    DateTime?
+  releaseNote   String?
+
+  driverId   String?
+  driver     User?   @relation("DriverPayments", fields: [driverId], references: [id], onDelete: SetNull)
+  driverName String
+
+  mechanicId   String?
+  mechanic     User?   @relation("MechanicPayments", fields: [mechanicId], references: [id], onDelete: SetNull)
+  mechanicName String?
+  providerName String?
+  requestId    String?
+
+  provider         String?
+  paymentUrl       String?
+  platformFee      Decimal?  @db.Decimal(10, 2)
+  commissionAmount Decimal?  @db.Decimal(10, 2)
+  mechanicAmount   Decimal?  @db.Decimal(10, 2)
+  paidAt           DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([driverId])
+  @@index([mechanicId])
+  @@index([status])
+  @@index([method])
+  @@index([createdAt])
+  @@index([requestId])
+  @@index([releaseStatus])
+}

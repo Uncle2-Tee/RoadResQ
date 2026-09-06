@@ -1,0 +1,21 @@
+
+> breakdownassistapp@1.0.0 web
+> expo start --web --port 8088
+
+env: load .env
+env: export EXPO_PUBLIC_API_URL
+Starting project at C:\Users\Elliot\FinalYearProject\BreakdownAssistApp\frontend
+React Compiler enabled
+Starting Metro Bundler
+Waiting on http://localhost:8088
+Logs for your project will appear below.
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+λ node_modules\expo-router\node\render.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web node_modules\expo-router\entry.js ▓▓▓▓▓▓▓░░░░░░░░░ 45.1% (452/673)
+λ node_modules\expo-router\node\render.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 64.0% (699/874)
+Web node_modules\expo-router\entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1239/1239)
+λ node_modules\expo-router\node\render.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 96.8% (1269/1290)
+λ Bundled 7691ms node_modules\expo-router\node\render.js (1290 modules)
+[API Client] Initialized with base URL: http://10.68.116.196:3000
+Web node_modules\expo-router\entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1239/1239)
+Web Bundled 13113ms node_modules\expo-router\entry.js (1239 modules)

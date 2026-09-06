@@ -1,0 +1,11 @@
+
+> breakdownassistapp@1.0.0 start
+> expo start --web --port 8084
+
+env: load .env
+env: export EXPO_PUBLIC_API_URL
+Starting project at C:\Users\Elliot\FinalYearProject\BreakdownAssistApp\frontend
+React Compiler enabled
+Starting Metro Bundler
+Waiting on http://localhost:8084
+Logs for your project will appear below.

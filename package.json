@@ -1,0 +1,31 @@
+{
+  "name": "breakdownassist-next-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:split-shops": "node scripts/split-shop-tables.cjs",
+    "db:push:session": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$env:USE_DIRECT_URL='true'; prisma db push\""
+  },
+  "dependencies": {
+    "@next/swc-win32-x64-msvc": "^16.2.9",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bcryptjs": "^3.0.3",
+    "next": "^15.5.9",
+    "pg": "^8.22.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "prisma": "^7.8.0",
+    "typescript": "^5.9.2"
+  }
+}
