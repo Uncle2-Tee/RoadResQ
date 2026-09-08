@@ -226,9 +226,9 @@ export default function AdminDashboardScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFF8F2' },
   header: { flexDirection: 'row', alignItems: 'center', paddingTop: 52, paddingHorizontal: 16, paddingBottom: 16, backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#F3E2D4' },
-  headerText: { flex: 1, alignItems: 'center' },
-  title: { fontSize: 21, fontWeight: '800', color: '#202936' },
-  subtitle: { marginTop: 3, fontSize: 12, color: '#747474' },
+  headerText: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  title: { fontSize: 21, fontWeight: '800', color: '#202936', textAlign: 'center' },
+  subtitle: { width: '100%', marginTop: 3, fontSize: 12, color: '#747474', textAlign: 'center', alignSelf: 'center' },
   iconButton: { width: 42, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF1E6' },
   loader: { marginTop: 40 },
   tabBar: { flexDirection: 'row', paddingHorizontal: 16, paddingTop: 14, gap: 10, backgroundColor: '#FFFFFF' },
