@@ -259,7 +259,25 @@ export async function POST(
       .slice(2, 8)
       .toUpperCase()}`;
 
-    const shopMatches =
+    /*
+     * Define the shop result type before using it.
+     */
+    type ShopMatch =
+      | Awaited<
+          ReturnType<
+            typeof prisma.mechanicShop.findFirst
+          >
+        >
+      | Awaited<
+          ReturnType<
+            typeof prisma.towShop.findFirst
+          >
+        >;
+
+    /*
+     * Get possible mechanic/tow shops.
+     */
+    const shopMatches: ShopMatch[] =
       requestRecord.mechanicId
         ? await Promise.all([
             prisma.mechanicShop.findFirst({
@@ -294,7 +312,7 @@ export async function POST(
                 },
               }),
 
-              prisma.towShop.findFirst({
+            prisma.towShop.findFirst({
                 where: {
                   shopName:
                     requestRecord.providerName,
@@ -306,37 +324,29 @@ export async function POST(
             ])
           : [];
 
-    type ShopMatch =
-      | Awaited<
-          ReturnType<
-            typeof prisma.mechanicShop.findFirst
-          >
-        >
-      | Awaited<
-          ReturnType<
-            typeof prisma.towShop.findFirst
-          >
-        >;
-
-    const mechanicShop = shopMatches
-      .filter(
-        (
-          shop
-        ): shop is NonNullable<ShopMatch> =>
-          Boolean(shop)
-      )
-      .sort(
-        (left, right) => {
-          if (!left || !right) {
-            return 0;
+    /*
+     * Remove null shops and select the
+     * most recently updated shop.
+     */
+    const mechanicShop =
+      shopMatches
+        .filter(
+          (
+            shop: ShopMatch
+          ): shop is NonNullable<ShopMatch> =>
+            shop !== null
+        )
+        .sort(
+          (
+            left: NonNullable<ShopMatch>,
+            right: NonNullable<ShopMatch>
+          ) => {
+            return (
+              right.updatedAt.getTime() -
+              left.updatedAt.getTime()
+            );
           }
-
-          return (
-            right.updatedAt.getTime() -
-            left.updatedAt.getTime()
-          );
-        }
-      )[0] || null;
+        )[0] || null;
 
     const {
       checkout,
@@ -393,40 +403,54 @@ export async function POST(
           await initializePaystackTransaction(
             {
               email: paymentEmail,
+
               amountPesewas:
                 toPesewas(
                   totalDriverPays
                 ),
+
               currency:
                 requestRecord.currency ||
                 'GHS',
+
               reference,
+
               callbackUrl:
                 process.env
                   .PAYSTACK_CALLBACK_URL,
+
               subaccount:
                 mechanicShop
                   ?.paystackSubaccountCode,
+
               transactionChargePesewas:
                 toPesewas(
                   platformFee
                 ),
+
               metadata: {
                 requestId,
+
                 driverId:
                   driver.id,
+
                 driverName,
+
                 mechanicId:
                   requestRecord.mechanicId ||
                   null,
+
                 providerName:
                   requestRecord.providerName ||
                   mechanicShop?.shopName ||
                   null,
+
                 platformFee,
+
                 commissionAmount:
                   jobAmount *
                   COMMISSION_RATE,
+
                 mechanicAmount,
               },
             }
@@ -437,9 +461,12 @@ export async function POST(
             data: {
               paymentId:
                 reference,
+
               reference,
+
               method:
                 'PAYSTACK',
+
               phoneNumber:
                 String(
                   body.phoneNumber ||
@@ -447,38 +474,53 @@ export async function POST(
                     requestRecord.driverPhone ||
                     ''
                 ).trim() || null,
+
               amount:
                 totalDriverPays,
+
               currency:
                 requestRecord.currency ||
                 'GHS',
+
               status:
                 PAYMENT_PROCESSING,
+
               releaseStatus:
                 'pending',
+
               driverId:
                 driver.id,
+
               driverName,
+
               mechanicId:
                 requestRecord.mechanicId ||
                 null,
+
               mechanicName:
                 requestRecord.providerName ||
                 mechanicShop?.shopName ||
                 null,
+
               providerName:
                 requestRecord.providerName ||
                 mechanicShop?.shopName ||
                 null,
+
               requestId,
+
               provider:
                 'Paystack',
+
               paymentUrl:
                 checkout.authorization_url,
+
               platformFee,
+
               commissionAmount:
                 jobAmount *
                 COMMISSION_RATE,
+
               mechanicAmount,
             },
           });
@@ -493,22 +535,31 @@ export async function POST(
     return Response.json({
       authorizationUrl:
         checkout.authorization_url,
+
       accessCode:
         checkout.access_code,
+
       reference,
+
       payment:
         toPaymentResponse(
           savedPayment
         ),
+
       breakdown: {
         jobAmount,
+
         bookingFee:
           PLATFORM_FEE_GHS,
+
         commissionAmount:
           jobAmount *
           COMMISSION_RATE,
+
         platformFee,
+
         mechanicAmount,
+
         totalDriverPays,
       },
     });
