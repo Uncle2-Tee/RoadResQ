@@ -14,6 +14,11 @@ const RELEASE_STATUSES = new Set([
 type PaymentRecord =
   Awaited<ReturnType<typeof prisma.payment.findMany>>[number];
 
+type ServiceStatusRecord = {
+  requestId: string;
+  status: string | null;
+};
+
 const toPaymentResponse = (
   payment: PaymentRecord,
   serviceStatus: string | null
@@ -77,11 +82,18 @@ export async function GET(request: Request) {
         },
       });
 
-    const serviceStatuses = new Map(
-      requests.map((item) => [
-        item.requestId,
-        item.status,
-      ])
+    const serviceStatuses = new Map<
+      string,
+      string | null
+    >(
+      requests.map(
+        (
+          item: ServiceStatusRecord
+        ) => [
+          item.requestId,
+          item.status,
+        ]
+      )
     );
 
     return Response.json({
@@ -90,9 +102,9 @@ export async function GET(request: Request) {
           toPaymentResponse(
             payment,
             payment.requestId
-              ? serviceStatuses
-                  .get(payment.requestId)
-                  ?.toString() || null
+              ? serviceStatuses.get(
+                  payment.requestId
+                )?.toString() || null
               : null
           )
       ),
