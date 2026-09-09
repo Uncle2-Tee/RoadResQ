@@ -1,5 +1,5 @@
-import { PaymentMethod, PaymentStatus } from '@prisma/client';
-import type { PaymentWhereInput } from '@prisma/client';
+import { PaymentMethod, PaymentStatus } from '@/generated/prisma/client';
+import type { PaymentWhereInput } from '@/generated/prisma/models/Payment';
 
 import { isDatabaseConnectionError, jsonError } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';

@@ -1,7 +1,7 @@
 import { isDatabaseConnectionError } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-const withTimeout = async <T,>(promise: Promise<T>, ms = 1000) => {
+const withTimeout = async <T,>(promise: Promise<T>, ms = 10000) => {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<never>((_, reject) => {
     timeoutId = setTimeout(() => reject(new Error('Database health check timed out')), ms);

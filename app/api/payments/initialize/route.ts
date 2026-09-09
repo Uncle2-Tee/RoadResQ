@@ -3,7 +3,7 @@ import {
   jsonError,
 } from '@/lib/auth';
 import { initializePaystackTransaction } from '@/lib/paystack';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 
 const PLATFORM_FEE_GHS = Number(
