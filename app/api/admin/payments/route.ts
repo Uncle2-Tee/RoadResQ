@@ -1,13 +1,18 @@
-import { isDatabaseConnectionError, jsonError, requireAdmin } from '@/lib/auth';
+import {
+  isDatabaseConnectionError,
+  jsonError,
+  requireAdmin,
+} from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-const RELEASE_STATUSES = new Set(['pending', 'released', 'rejected']);
+const RELEASE_STATUSES = new Set([
+  'pending',
+  'released',
+  'rejected',
+]);
 
 type PaymentRecord =
   Awaited<ReturnType<typeof prisma.payment.findMany>>[number];
-
-type RequestRecord =
-  Awaited<ReturnType<typeof prisma.requestHistory.findMany>>[number];
 
 const toPaymentResponse = (
   payment: PaymentRecord,
@@ -44,17 +49,33 @@ export async function GET(request: Request) {
     }
 
     const payments = await prisma.payment.findMany({
-      orderBy: { createdAt: 'desc' },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     const requestIds = payments
-      .map((payment: PaymentRecord) => payment.requestId)
-      .filter((id): id is string => Boolean(id));
+      .map(
+        (payment: PaymentRecord) =>
+          payment.requestId
+      )
+      .filter(
+        (id: string | null): id is string =>
+          Boolean(id)
+      );
 
-    const requests = await prisma.requestHistory.findMany({
-      where: { requestId: { in: requestIds } },
-      select: { requestId: true, status: true },
-    });
+    const requests =
+      await prisma.requestHistory.findMany({
+        where: {
+          requestId: {
+            in: requestIds,
+          },
+        },
+        select: {
+          requestId: true,
+          status: true,
+        },
+      });
 
     const serviceStatuses = new Map(
       requests.map((item) => [
@@ -64,19 +85,28 @@ export async function GET(request: Request) {
     );
 
     return Response.json({
-      payments: payments.map((payment: PaymentRecord) =>
-        toPaymentResponse(
-          payment,
-          payment.requestId
-            ? serviceStatuses.get(payment.requestId)?.toString() || null
-            : null
-        )
+      payments: payments.map(
+        (payment: PaymentRecord) =>
+          toPaymentResponse(
+            payment,
+            payment.requestId
+              ? serviceStatuses
+                  .get(payment.requestId)
+                  ?.toString() || null
+              : null
+          )
       ),
     });
   } catch (error) {
-    console.error('[admin/payments] list failed:', error);
+    console.error(
+      '[admin/payments] list failed:',
+      error
+    );
 
-    if ((error as { code?: string })?.code === 'P2022') {
+    if (
+      (error as { code?: string })?.code ===
+      'P2022'
+    ) {
       return jsonError(
         'Payment approval fields are missing. Run Prisma db push and restart the backend.',
         503
@@ -90,21 +120,31 @@ export async function GET(request: Request) {
       );
     }
 
-    return jsonError('Unable to load payment approvals', 500);
+    return jsonError(
+      'Unable to load payment approvals',
+      500
+    );
   }
 }
 
 export async function PATCH(request: Request) {
   try {
     if (!(await requireAdmin(request))) {
-      return jsonError('Admin access required', 403);
+      return jsonError(
+        'Admin access required',
+        403
+      );
     }
 
     const body = await request.json();
 
-    const paymentId = String(body.paymentId || '').trim();
+    const paymentId = String(
+      body.paymentId || ''
+    ).trim();
 
-    const releaseStatus = String(body.releaseStatus || '')
+    const releaseStatus = String(
+      body.releaseStatus || ''
+    )
       .trim()
       .toLowerCase();
 
@@ -113,39 +153,59 @@ export async function PATCH(request: Request) {
         ? body.releaseNote.trim()
         : null;
 
-    if (!paymentId || !RELEASE_STATUSES.has(releaseStatus)) {
+    if (
+      !paymentId ||
+      !RELEASE_STATUSES.has(releaseStatus)
+    ) {
       return jsonError(
         'paymentId and a valid release status are required',
         400
       );
     }
 
-    const payment = await prisma.payment.findUnique({
-      where: { paymentId },
-    });
+    const payment =
+      await prisma.payment.findUnique({
+        where: {
+          paymentId,
+        },
+      });
 
     if (!payment) {
-      return jsonError('Payment not found', 404);
+      return jsonError(
+        'Payment not found',
+        404
+      );
     }
 
-    let serviceStatus: string | null = null;
+    let serviceStatus: string | null =
+      null;
 
     if (payment.requestId) {
       const serviceRequest =
-        await prisma.requestHistory.findUnique({
-          where: { requestId: payment.requestId },
-          select: { status: true },
-        });
+        await prisma.requestHistory.findUnique(
+          {
+            where: {
+              requestId: payment.requestId,
+            },
+            select: {
+              status: true,
+            },
+          }
+        );
 
       serviceStatus =
-        serviceRequest?.status?.toString() || null;
+        serviceRequest?.status?.toString() ||
+        null;
     }
 
     if (
       releaseStatus === 'released' &&
       (
-        payment.status.toString().toLowerCase() !== 'completed' ||
-        serviceStatus?.toLowerCase() !== 'accepted'
+        payment.status
+          .toString()
+          .toLowerCase() !== 'completed' ||
+        serviceStatus?.toLowerCase() !==
+          'accepted'
       )
     ) {
       return jsonError(
@@ -154,17 +214,21 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const savedPayment = await prisma.payment.update({
-      where: { paymentId },
-      data: {
-        releaseStatus,
-        releasedAt:
-          releaseStatus === 'released'
-            ? new Date()
-            : null,
-        releaseNote: releaseNote || null,
-      },
-    });
+    const savedPayment =
+      await prisma.payment.update({
+        where: {
+          paymentId,
+        },
+        data: {
+          releaseStatus,
+          releasedAt:
+            releaseStatus === 'released'
+              ? new Date()
+              : null,
+          releaseNote:
+            releaseNote || null,
+        },
+      });
 
     return Response.json({
       payment: toPaymentResponse(
@@ -179,7 +243,10 @@ export async function PATCH(request: Request) {
     );
 
     if (error?.code === 'P2025') {
-      return jsonError('Payment not found', 404);
+      return jsonError(
+        'Payment not found',
+        404
+      );
     }
 
     if (isDatabaseConnectionError(error)) {
