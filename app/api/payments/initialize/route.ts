@@ -3,6 +3,7 @@ import {
   jsonError,
 } from '@/lib/auth';
 import { initializePaystackTransaction } from '@/lib/paystack';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 
 const PLATFORM_FEE_GHS = Number(
@@ -312,7 +313,7 @@ export async function POST(
                 },
               }),
 
-            prisma.towShop.findFirst({
+              prisma.towShop.findFirst({
                 where: {
                   shopName:
                     requestRecord.providerName,
@@ -352,7 +353,7 @@ export async function POST(
       checkout,
       savedPayment,
     } = await prisma.$transaction(
-      async (tx) => {
+      async (tx: Prisma.TransactionClient) => {
         await tx.$executeRaw`
           SELECT pg_advisory_xact_lock(
             hashtext(${requestId})
