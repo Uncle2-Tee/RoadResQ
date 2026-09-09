@@ -1,4 +1,5 @@
 import { PaymentMethod, PaymentStatus } from '@prisma/client';
+import type { PaymentWhereInput } from '@prisma/client';
 
 import { isDatabaseConnectionError, jsonError } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -90,7 +91,7 @@ export async function GET(request: Request) {
       return jsonError('driverId, driverName, mechanicId, or providerName is required', 400);
     }
 
-    const filters = [];
+    const filters: PaymentWhereInput[] = [];
     if (driverId) {
       filters.push({ driverId });
     }
@@ -188,9 +189,14 @@ export async function POST(request: Request) {
     });
 
     return Response.json({ payment: toPaymentResponse(savedPayment) }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[payments] create failed:', error);
-    if (error?.code === 'P2002') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2002'
+    ) {
       return jsonError('A payment with this ID or reference already exists', 409);
     }
 
