@@ -1,4 +1,4 @@
-import { RequestStatus, RequestType } from '@prisma/client';
+import { RequestStatus, RequestType } from '@/generated/prisma/client';
 
 import { isDatabaseConnectionError, jsonError } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
