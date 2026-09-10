@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { PaymentStatus } from '@prisma/client';
+import { PaymentStatus } from '@/generated/prisma/client';
 
 import { prisma } from '@/lib/prisma';
 
