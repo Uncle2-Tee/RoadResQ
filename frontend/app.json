@@ -14,9 +14,14 @@
     },
 
     "android": {
-      "package": "com.roadresq.app",
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+  "package": "com.roadresq.app",
+  "edgeToEdgeEnabled": true,
+  "predictiveBackGestureEnabled": false,
+  "config": {
+    "googleMaps": {
+      "apiKey": "AIzaSyBnDBHKYLJH3kddxzXrADTJ_WgZMTu7zmo"
+        }
+      }
     },
 
     "web": {
