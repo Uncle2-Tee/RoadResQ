@@ -7,7 +7,6 @@ import { AppIcon } from '../components/app-icon';
 import { BottomNav } from '../components/bottom-nav';
 import { Drawer } from '../components/drawer';
 import { Pressable } from '../components/haptic-pressable';
-import { SmsMessageModal } from '../components/sms-message-modal';
 import { TouchableOpacity } from '../components/haptic-touchable-opacity';
 import { ThemedText } from '../components/themed-text';
 import { ThemedView } from '../components/themed-view';
@@ -15,7 +14,7 @@ import { LocationPin } from '../components/location-pin';
 
 import * as Location from 'expo-location';
 import MapView, { Marker, type NativeMapView } from '../components/native-map';
-import { saveDriverLocation } from '../services/driver-location-cache';
+import { getCachedDriverLocation, saveDriverLocation } from '../services/driver-location-cache';
 import { calculateDistance, fetchNearbyShops, removeDeletedShops, removeUnavailableShopNames, resetLegacyShopData, ShopLocation } from '../services/location-service';
 import { getLocationName } from '../services/location-label';
 import { recordMechanicContactRequest } from '../services/request-history-recorder';
@@ -38,6 +37,36 @@ interface Region {
 
 // Type alias for shop location
 type Mechanic = ShopLocation;
+
+type MechanicIssue =
+  | 'engine-problem'
+  | 'flat-tyre'
+  | 'dead-battery'
+  | 'overheating'
+  | 'fuel-problem'
+  | 'accident'
+  | 'electrical-problem'
+  | 'locked-out'
+  | 'transmission-problem'
+  | 'other';
+
+const mechanicIssueOptions: Array<{
+  value: MechanicIssue;
+  label: string;
+  description: string;
+  icon: string;
+}> = [
+  { value: 'engine-problem', label: 'Engine problem', description: 'The engine is stalled, misfiring, or will not start', icon: 'wrench' },
+  { value: 'flat-tyre', label: 'Flat tyre', description: 'A puncture or damaged tyre needs assistance', icon: 'car' },
+  { value: 'dead-battery', label: 'Dead battery', description: 'The vehicle needs a jump-start or battery support', icon: 'battery' },
+  { value: 'overheating', label: 'Overheating', description: 'The engine temperature is too high or the warning light is on', icon: 'flame' },
+  { value: 'fuel-problem', label: 'Fuel problem', description: 'The vehicle is out of fuel or has a fuel system issue', icon: 'fuel' },
+  { value: 'accident', label: 'Accident', description: 'The vehicle has been involved in a collision', icon: 'alert' },
+  { value: 'electrical-problem', label: 'Electrical problem', description: 'The lights, starter, wiring, or another electrical system has failed', icon: 'zap' },
+  { value: 'locked-out', label: 'Locked-out vehicle', description: 'The keys are locked inside or unavailable', icon: 'lock' },
+  { value: 'transmission-problem', label: 'Transmission problem', description: 'The vehicle will not change gear or drive correctly', icon: 'settings' },
+  { value: 'other', label: 'Other', description: 'Describe a different problem to the mechanic', icon: 'help' },
+];
 
 // Helper function to format time ago
 const formatTimeAgo = (timestamp: number): string => {
@@ -111,8 +140,7 @@ export default function DashboardScreen() {
   const locationWatcherRef = useRef<any>(null);
   const lastResolvedLocationRef = useRef<{ latitude: number; longitude: number } | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(true);
-  const [smsMechanic, setSmsMechanic] = useState<Mechanic | null>(null);
-  const [smsSending, setSmsSending] = useState(false);
+  const [issueMechanic, setIssueMechanic] = useState<Mechanic | null>(null);
 
   const registerActivity = useCallback(() => {
     // Keep the bottom navigation static while preserving existing touch handlers.
@@ -298,7 +326,14 @@ export default function DashboardScreen() {
         );
       } catch (error) {
         console.error('Error getting location:', error);
-        setErrorMsg('Location services unavailable. Make sure location is enabled and try again.');
+        const cachedLocation = await getCachedDriverLocation();
+        if (cachedLocation) {
+          applyMapLocation(cachedLocation.latitude, cachedLocation.longitude);
+          updateDriverLocationName(cachedLocation.latitude, cachedLocation.longitude, { force: true }).catch(() => {});
+          updateNearbyMechanics(cachedLocation.latitude, cachedLocation.longitude, setNearbyMechanics).catch(() => {});
+        } else {
+          setErrorMsg('Location services unavailable. Make sure location is enabled and try again.');
+        }
         setLoading(false);
         // Load cached shops as fallback
         await loadCachedShops();
@@ -400,7 +435,7 @@ export default function DashboardScreen() {
     return locationName;
   };
 
-  const handleChat = async (mechanic: Mechanic) => {
+  const handleChat = async (mechanic: Mechanic, issue?: string) => {
     registerActivity();
     router.push({
       pathname: '/mechanic-chat',
@@ -412,23 +447,24 @@ export default function DashboardScreen() {
         mechanicId: mechanic.mechanicId || mechanic.id,
         requestType: 'service',
         driverLocation: driverLocationName,
+        ...(issue ? { problemDescription: issue } : {}),
       },
     });
   };
 
-  const handleSMS = (mechanic: Mechanic) => {
+  const handleIssuePress = (mechanic: Mechanic) => {
     registerActivity();
-    setSmsMechanic(mechanic);
+    setIssueMechanic(mechanic);
   };
 
-  const sendSMS = async (message: string) => {
-    if (!smsMechanic || smsSending) {
-      return;
-    }
+  const handleIssueSelect = (mechanic: Mechanic, issue: MechanicIssue) => {
+    setIssueMechanic(null);
+    const selectedIssue = mechanicIssueOptions.find((option) => option.value === issue);
+    handleChat(mechanic, selectedIssue?.value === 'other' ? undefined : selectedIssue?.label);
+  };
 
-    const mechanic = smsMechanic;
-    setSmsSending(true);
-
+  const handleSMS = async (mechanic: Mechanic) => {
+    registerActivity();
     try {
       const requestLocationName = await resolveCurrentDriverLocationName();
       await recordMechanicContactRequest({
@@ -442,18 +478,11 @@ export default function DashboardScreen() {
         },
         driverName,
         driverLocation: requestLocationName,
-        problemDescription: message,
       });
 
-      setSmsMechanic(null);
-      const bodySeparator = Platform.OS === 'ios' ? '&' : '?';
-      await Linking.openURL(
-        `sms:${mechanic.phone}${bodySeparator}body=${encodeURIComponent(message)}`
-      );
+      await Linking.openURL(`sms:${mechanic.phone.replace(/[^\d+]/g, '')}`);
     } catch (error) {
       console.error('Unable to send SMS request:', error);
-    } finally {
-      setSmsSending(false);
     }
   };
 
@@ -766,14 +795,14 @@ export default function DashboardScreen() {
                               styles.actionButtonChat,
                               (hovered || pressed) && styles.actionButtonChatActive,
                             ]}
-                            onPress={() => handleChat(mechanic)}
+                            onPress={() => handleIssuePress(mechanic)}
                           >
                             {({ hovered, pressed }) => (
                               <ThemedText style={[
                                 styles.actionButtonText,
                                 (hovered || pressed) ? styles.actionButtonTextActive : styles.actionButtonTextChat,
                               ]}>
-                                Chat
+                                Issue
                               </ThemedText>
                             )}
                           </Pressable>
@@ -846,6 +875,59 @@ export default function DashboardScreen() {
         driverName={driverName}
         role="driver"
       />
+
+      <Modal
+        visible={Boolean(issueMechanic)}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIssueMechanic(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.issueModalContent}>
+            <View style={styles.modalHeader}>
+              <View style={styles.issueModalTitleBlock}>
+                <ThemedText style={styles.modalTitle}>What is the problem?</ThemedText>
+                <ThemedText style={styles.issueModalSubtitle}>
+                  Select an issue to help the mechanic prepare.
+                </ThemedText>
+              </View>
+              <TouchableOpacity
+                style={styles.modalCloseButton}
+                onPress={() => setIssueMechanic(null)}
+                accessibilityRole="button"
+                accessibilityLabel="Close issue options"
+              >
+                <AppIcon name="close" size={22} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView
+              style={styles.issueOptionsScroll}
+              contentContainerStyle={styles.issueOptionsContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {mechanicIssueOptions.map((issue) => (
+                <TouchableOpacity
+                  key={issue.value}
+                  style={styles.issueOption}
+                  onPress={() => issueMechanic && handleIssueSelect(issueMechanic, issue.value)}
+                  accessibilityRole="button"
+                  accessibilityLabel={issue.label}
+                >
+                  <View style={styles.issueOptionIcon}>
+                    <AppIcon name={issue.icon as any} size={20} color="#1D4ED8" />
+                  </View>
+                  <View style={styles.issueOptionText}>
+                    <ThemedText style={styles.issueOptionTitle}>{issue.label}</ThemedText>
+                    <ThemedText style={styles.issueOptionDescription}>{issue.description}</ThemedText>
+                  </View>
+                  <AppIcon name="chevronRight" size={18} color="#9CA3AF" />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
 
       {/* Offline Search Modal */}
       <Modal
@@ -943,13 +1025,6 @@ export default function DashboardScreen() {
         </View>
       </Modal>
 
-      <SmsMessageModal
-        visible={Boolean(smsMechanic)}
-        recipientName={smsMechanic?.name || ''}
-        sending={smsSending}
-        onCancel={() => setSmsMechanic(null)}
-        onSend={sendSMS}
-      />
     </ThemedView>
   );
 }
@@ -1493,6 +1568,66 @@ const styles = StyleSheet.create({
     maxHeight: '85%',
     paddingTop: 16,
     paddingBottom: 20,
+  },
+  issueModalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '88%',
+    paddingTop: 16,
+    paddingBottom: 12,
+  },
+  issueModalTitleBlock: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  issueModalSubtitle: {
+    color: '#6B7280',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  issueOptionsScroll: {
+    paddingHorizontal: 16,
+  },
+  issueOptionsContent: {
+    paddingTop: 12,
+    paddingBottom: 20,
+  },
+  issueOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 70,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 14,
+    backgroundColor: '#F8FAFC',
+  },
+  issueOptionIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    backgroundColor: '#EFF6FF',
+  },
+  issueOptionText: {
+    flex: 1,
+    paddingRight: 8,
+  },
+  issueOptionTitle: {
+    color: '#111827',
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 3,
+  },
+  issueOptionDescription: {
+    color: '#6B7280',
+    fontSize: 12,
+    lineHeight: 17,
   },
   modalHeader: {
     flexDirection: 'row',

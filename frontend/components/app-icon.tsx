@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import type { StyleProp } from 'react-native';
 
 const AlertTriangle = require('../node_modules/lucide-react-native/dist/cjs/icons/triangle-alert.js');
+const Battery = require('../node_modules/lucide-react-native/dist/cjs/icons/battery.js');
 const BarChart3 = require('../node_modules/lucide-react-native/dist/cjs/icons/chart-bar.js');
 const Bell = require('../node_modules/lucide-react-native/dist/cjs/icons/bell.js');
 const Camera = require('../node_modules/lucide-react-native/dist/cjs/icons/camera.js');
@@ -18,8 +19,11 @@ const CreditCard = require('../node_modules/lucide-react-native/dist/cjs/icons/c
 const Eye = require('../node_modules/lucide-react-native/dist/cjs/icons/eye.js');
 const EyeOff = require('../node_modules/lucide-react-native/dist/cjs/icons/eye-off.js');
 const FingerprintPattern = require('../node_modules/lucide-react-native/dist/cjs/icons/fingerprint-pattern.js');
+const Flame = require('../node_modules/lucide-react-native/dist/cjs/icons/flame.js');
+const Fuel = require('../node_modules/lucide-react-native/dist/cjs/icons/fuel.js');
 const Home = require('../node_modules/lucide-react-native/dist/cjs/icons/house.js');
 const Inbox = require('../node_modules/lucide-react-native/dist/cjs/icons/inbox.js');
+const LockKeyhole = require('../node_modules/lucide-react-native/dist/cjs/icons/lock-keyhole.js');
 const LogOut = require('../node_modules/lucide-react-native/dist/cjs/icons/log-out.js');
 const MapPin = require('../node_modules/lucide-react-native/dist/cjs/icons/map-pin.js');
 const Menu = require('../node_modules/lucide-react-native/dist/cjs/icons/menu.js');
@@ -32,18 +36,22 @@ const Send = require('../node_modules/lucide-react-native/dist/cjs/icons/send.js
 const Smartphone = require('../node_modules/lucide-react-native/dist/cjs/icons/smartphone.js');
 const Star = require('../node_modules/lucide-react-native/dist/cjs/icons/star.js');
 const Store = require('../node_modules/lucide-react-native/dist/cjs/icons/store.js');
+const Settings = require('../node_modules/lucide-react-native/dist/cjs/icons/settings-2.js');
+const CircleQuestionMark = require('../node_modules/lucide-react-native/dist/cjs/icons/circle-question-mark.js');
 const Target = require('../node_modules/lucide-react-native/dist/cjs/icons/target.js');
 const Timer = require('../node_modules/lucide-react-native/dist/cjs/icons/timer.js');
 const Trash2 = require('../node_modules/lucide-react-native/dist/cjs/icons/trash-2.js');
 const User = require('../node_modules/lucide-react-native/dist/cjs/icons/user.js');
 const Wallet = require('../node_modules/lucide-react-native/dist/cjs/icons/wallet.js');
 const Wrench = require('../node_modules/lucide-react-native/dist/cjs/icons/wrench.js');
+const Zap = require('../node_modules/lucide-react-native/dist/cjs/icons/zap.js');
 const X = require('../node_modules/lucide-react-native/dist/cjs/icons/x.js');
 
 type LucideIcon = ComponentType<any>;
 
 const icons = {
   alert: AlertTriangle,
+  battery: Battery,
   bell: Bell,
   camera: Camera,
   chart: BarChart3,
@@ -60,9 +68,12 @@ const icons = {
   eye: Eye,
   eyeOff: EyeOff,
   fingerprint: FingerprintPattern,
+  flame: Flame,
+  fuel: Fuel,
   home: Home,
   inbox: Inbox,
   list: ClipboardList,
+  lock: LockKeyhole,
   logout: LogOut,
   mapPin: MapPin,
   menu: Menu,
@@ -72,6 +83,7 @@ const icons = {
   refresh: RefreshCw,
   ruler: Ruler,
   send: Send,
+  settings: Settings,
   smartphone: Smartphone,
   star: Star,
   store: Store,
@@ -81,6 +93,8 @@ const icons = {
   user: User,
   wallet: Wallet,
   wrench: Wrench,
+  help: CircleQuestionMark,
+  zap: Zap,
 } satisfies Record<string, LucideIcon>;
 
 export type AppIconName = keyof typeof icons;

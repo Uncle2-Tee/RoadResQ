@@ -29,6 +29,7 @@ const menuItems: MenuItem[] = [
   { label: 'Requests History', route: '/request', icon: 'list', role: 'tower' },
   { label: 'Transactions', route: '/transaction-history', icon: 'creditCard', role: 'tower' },
   { label: 'Request Tow', route: '/tow-request', icon: 'car', usesTowImage: true, role: 'driver' },
+  { label: 'Emergency Assistance', route: '/emergency', icon: 'alert', role: 'driver' },
   { label: 'Requests History', route: '/request', icon: 'list', role: 'driver' },
   { label: 'Payment', route: '/payment', icon: 'creditCard', role: 'driver' },
 ];

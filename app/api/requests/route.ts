@@ -38,7 +38,8 @@ const toRequestType = (value: unknown): RequestType | null => {
     normalized === RequestType.TOW ||
     normalized === RequestType.CALL ||
     normalized === RequestType.SMS ||
-    normalized === RequestType.CHAT
+    normalized === RequestType.CHAT ||
+    normalized === RequestType.EMERGENCY
   ) {
     return normalized as RequestType;
   }
@@ -139,7 +140,7 @@ export async function POST(request: Request) {
     const type = toRequestType(body.type);
 
     if (!type) {
-      return jsonError('Request type must be service, tow, call, sms, or chat', 400);
+      return jsonError('Request type must be service, tow, call, sms, chat, or emergency', 400);
     }
 
     const requestId = String(body.requestId || '').trim();
@@ -151,7 +152,7 @@ export async function POST(request: Request) {
     }
 
     const defaultStatus =
-      type === RequestType.TOW
+      type === RequestType.TOW || type === RequestType.EMERGENCY
         ? RequestStatus.CONFIRMED
         : type === RequestType.CALL
         ? RequestStatus.CALLED
@@ -237,13 +238,18 @@ export async function POST(request: Request) {
 
     if (
       mechanicId &&
-      (type === RequestType.SERVICE || type === RequestType.TOW) &&
+      (type === RequestType.SERVICE || type === RequestType.TOW || type === RequestType.EMERGENCY) &&
       (status === RequestStatus.PENDING || status === RequestStatus.CONFIRMED)
     ) {
       notifyProviderAboutRequest({
         mechanicId,
         requestId: savedRequest.requestId,
-        type: type === RequestType.TOW ? 'tow' : 'service',
+        type:
+          type === RequestType.EMERGENCY
+            ? 'emergency'
+            : type === RequestType.TOW
+              ? 'tow'
+              : 'service',
         driverName: savedRequest.driverName,
         providerName: savedRequest.providerName,
       }).catch((error) => {

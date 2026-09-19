@@ -7,6 +7,7 @@ import { BlinkingRequestNotification } from '../components/blinking-request-noti
 import { DriverRequestStatusWatcher } from '../components/driver-request-status-watcher';
 import { MechanicRequestSoundWatcher } from '../components/mechanic-request-sound-watcher';
 import { PushNotificationManager } from '../components/push-notification-manager';
+import { LocationBootstrap } from '../components/location-bootstrap';
 import { useColorScheme } from '../hooks/use-color-scheme';
 
 export default function RootLayout() {
@@ -41,12 +42,14 @@ export default function RootLayout() {
         <Stack.Screen name="role-select" />
         <Stack.Screen name="explore" />
         <Stack.Screen name="tow-request" />
+        <Stack.Screen name="emergency" />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <BlinkingRequestNotification />
       <DriverRequestStatusWatcher />
       <MechanicRequestSoundWatcher />
       <PushNotificationManager />
+      <LocationBootstrap />
       <StatusBar style="auto" />
     </ThemeProvider>
   );

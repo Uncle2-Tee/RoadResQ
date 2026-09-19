@@ -72,8 +72,9 @@ export default function MechanicChatScreen() {
   const towServicePrice = Number(params.servicePrice || 0);
   const towServiceEstimatedTime = Number(params.serviceEstimatedTime || 0);
   const suppliedDriverLocation = (params.driverLocation as string) || 'Location unavailable';
+  const suppliedProblemDescription = (params.problemDescription as string) || '';
 
-  const [problemText, setProblemText] = useState('');
+  const [problemText, setProblemText] = useState(suppliedProblemDescription);
   const [currentRequest, setCurrentRequest] = useState<ServiceRequest | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const lastAlertStatusRef = useRef<RequestStatus | null>(null);

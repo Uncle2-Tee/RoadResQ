@@ -69,7 +69,19 @@ interface ContactRecord {
   status: 'called' | 'messaged' | 'chat';
 }
 
-type AllRequests = ServiceRequest | TowRequest | ContactRecord;
+interface EmergencyRequest {
+  id: string;
+  type: 'emergency';
+  serviceName: string;
+  servicePhone: string;
+  driverName: string;
+  location: string;
+  problemDescription?: string;
+  timestamp: string;
+  status: string;
+}
+
+type AllRequests = ServiceRequest | TowRequest | ContactRecord | EmergencyRequest;
 
 const DRIVER_NAME_KEY = 'driverName';
 const MECHANIC_NAME_KEY = 'mechanicName';
@@ -142,6 +154,9 @@ const getTowRequestIdentity = (request: Pick<TowRequest, 'driverName' | 'service
 
 const isTowRequest = (request: AllRequests): request is TowRequest =>
   (request as TowRequest).type === 'tow';
+
+const isEmergencyRequest = (request: AllRequests): request is EmergencyRequest =>
+  (request as EmergencyRequest).type === 'emergency';
 
 const isContactRecord = (request: AllRequests): request is ContactRecord =>
   ['call', 'sms', 'chat'].includes((request as ContactRecord).type);
@@ -288,6 +303,20 @@ const dedupeTowRequests = (requests: AllRequests[]) => {
 };
 
 const mapDatabaseRequest = (request: RequestHistoryItem): AllRequests => {
+  if (request.type === 'emergency') {
+    return {
+      id: request.requestId,
+      type: 'emergency',
+      serviceName: request.providerName,
+      servicePhone: request.providerPhone || '',
+      driverName: request.driverName,
+      location: request.driverLocation || 'Location not provided',
+      problemDescription: request.problemDescription || 'Emergency assistance requested',
+      timestamp: request.requestedAt,
+      status: request.status,
+    };
+  }
+
   if (request.type === 'tow') {
     return {
       id: request.requestId,
@@ -431,13 +460,20 @@ export default function RequestScreen() {
       const hiddenRequestIdSet = await getHiddenRequestIds();
 
       const sortRequests = (requests: AllRequests[]) =>
-        requests.sort((a, b) => {
+        [...requests].sort((a, b) => {
+          const emergencyWeight = (request: AllRequests) => (isEmergencyRequest(request) ? 0 : 1);
           const timeA = new Date(
-            (a as ServiceRequest).createdAt || (a as TowRequest).timestamp || (a as ContactRecord).timestamp
+            (a as ServiceRequest).createdAt || (a as TowRequest).timestamp || (a as ContactRecord).timestamp || (a as EmergencyRequest).timestamp
           ).getTime();
           const timeB = new Date(
-            (b as ServiceRequest).createdAt || (b as TowRequest).timestamp || (b as ContactRecord).timestamp
+            (b as ServiceRequest).createdAt || (b as TowRequest).timestamp || (b as ContactRecord).timestamp || (b as EmergencyRequest).timestamp
           ).getTime();
+
+          const priorityDiff = emergencyWeight(a) - emergencyWeight(b);
+          if (priorityDiff !== 0) {
+            return priorityDiff;
+          }
+
           return timeB - timeA;
         });
 
@@ -895,11 +931,12 @@ export default function RequestScreen() {
         ) : (
           filteredRequests.map((request) => {
             const isServiceRequest = 'mechanicName' in request;
+            const isEmergency = isEmergencyRequest(request);
             const isTowRequest = (request as TowRequest).type === 'tow';
             const contactType = (request as any).type;
             const isContactRecord = ['call', 'sms', 'chat'].includes(contactType);
             const canDelete = request.status !== 'accepted';
-            const shouldBlink = !isContactRecord && isPendingStatus(request.status);
+            const shouldBlink = (isEmergency || (!isContactRecord && isPendingStatus(request.status)));
 
             return (
               <BlinkingCard 
@@ -912,14 +949,18 @@ export default function RequestScreen() {
               >
                 <View style={styles.requestHeader}>
                   <View style={styles.requestTypeContainer}>
-                    {isTowRequest ? (
+                    {isEmergency ? (
+                      <AppIcon name="alert" size={responsive.isTablet ? 28 : 24} color="#DC2626" style={styles.requestTypeIcon} />
+                    ) : isTowRequest ? (
                       <Image source={towImage} style={styles.requestTypeTowImage} resizeMode="cover" />
                     ) : (
                       <AppIcon name={contactType === 'call' ? 'phone' : contactType === 'sms' ? 'message' : contactType === 'chat' ? 'message' : 'wrench'} size={responsive.isTablet ? 28 : 24} color="#FF8C42" style={styles.requestTypeIcon} />
                     )}
                     <View style={styles.requestTypeText}>
                       <ThemedText style={[styles.requestTypeLabel, { fontSize: responsive.isTablet ? 13 : responsive.isIOS ? 13 : 12 }]}>
-                        {isTowRequest
+                        {isEmergency
+                          ? 'Emergency Assistance'
+                          : isTowRequest
                           ? 'Tow Service'
                           : contactType === 'call'
                           ? 'Called Mechanic'

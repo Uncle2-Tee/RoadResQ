@@ -196,6 +196,7 @@ enum RequestType {
   CALL
   SMS
   CHAT
+  EMERGENCY
 }
 
 enum RequestStatus {

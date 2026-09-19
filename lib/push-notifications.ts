@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
 const REQUEST_NOTIFICATION_CHANNEL_ID = 'requests';
 
-type RequestNotificationType = 'service' | 'tow';
+type RequestNotificationType = 'service' | 'tow' | 'emergency';
 
 type ExpoPushMessage = {
   to: string;
@@ -131,18 +131,25 @@ export async function notifyProviderAboutRequest({
     return;
   }
 
-  const title = type === 'tow' ? 'New tow request' : 'New mechanic request';
+  const title =
+    type === 'emergency'
+      ? 'Emergency assistance requested'
+      : type === 'tow'
+        ? 'New tow request'
+        : 'New mechanic request';
   const body =
-    type === 'tow'
-      ? `${driverName} needs towing support from ${providerName}.`
-      : `${driverName} needs mechanic assistance from ${providerName}.`;
-  const screen = type === 'tow' ? 'request' : 'mechanic-inbox';
+    type === 'emergency'
+      ? `${driverName} needs urgent assistance from ${providerName}.`
+      : type === 'tow'
+        ? `${driverName} needs towing support from ${providerName}.`
+        : `${driverName} needs mechanic assistance from ${providerName}.`;
+  const screen = type === 'service' ? 'mechanic-inbox' : 'request';
 
   await sendExpoPushNotifications(
     validTokens.map((token) => ({
       to: token,
       title,
-      body: `${body} Tap to accept or decline.`,
+      body: `${body} Tap to view the request.`,
       sound: 'default',
       priority: 'high',
       channelId: REQUEST_NOTIFICATION_CHANNEL_ID,

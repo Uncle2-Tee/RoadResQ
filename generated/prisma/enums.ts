@@ -14,7 +14,8 @@ export const RequestType = {
   TOW: 'TOW',
   CALL: 'CALL',
   SMS: 'SMS',
-  CHAT: 'CHAT'
+  CHAT: 'CHAT',
+  EMERGENCY: 'EMERGENCY'
 } as const
 
 export type RequestType = (typeof RequestType)[keyof typeof RequestType]

@@ -12,7 +12,7 @@ import MapView, { Marker, type NativeMapView } from '../components/native-map';
 import { ThemedText } from '../components/themed-text';
 import { ThemedView } from '../components/themed-view';
 import { getMechanicShops } from '../services/api-client';
-import { saveDriverLocation } from '../services/driver-location-cache';
+import { getCachedDriverLocation, saveDriverLocation } from '../services/driver-location-cache';
 import { getLocationName } from '../services/location-label';
 import { calculateDistance } from '../services/location-service';
 import { recordTowRequest } from '../services/request-history-recorder';
@@ -146,7 +146,13 @@ export default function TowRequestScreen() {
       } catch (error) {
         console.error('Unable to get location:', error);
         if (active) {
-          setErrorMsg('Unable to fetch your location. Please try refreshing.');
+          const cachedLocation = await getCachedDriverLocation();
+          if (cachedLocation) {
+            applyLocation(cachedLocation.latitude, cachedLocation.longitude);
+            await updateServices(cachedLocation.latitude, cachedLocation.longitude);
+          } else {
+            setErrorMsg('Unable to fetch your location. Please try refreshing.');
+          }
           setLoading(false);
         }
       }
@@ -232,9 +238,13 @@ export default function TowRequestScreen() {
       <ActivityIndicator size="large" color="#FF8C42" /><ThemedText style={styles.loadingText}>Loading map…</ThemedText>
     </View> : <>
       <View style={styles.mapContainer}>
-        {region && driverLocation && <MapView style={styles.map} initialRegion={region} region={region} ref={mapRef} loadingEnabled moveOnMarkerPress={false}>
-          <Marker coordinate={driverLocation} title="Your Location" description={driverLocationName} anchor={{ x: 0.5, y: 1 }} zIndex={1000} tracksViewChanges={false}>
-            <View style={styles.driverMarker}><AppIcon name="mapPin" size={46} color="#2563EB" strokeWidth={3.2} /></View>
+        {region && driverLocation && <MapView style={styles.map} initialRegion={region} region={region} ref={mapRef} loadingEnabled moveOnMarkerPress={false} showsUserLocation showsMyLocationButton>
+          <Marker coordinate={driverLocation} title="Your exact location" description={driverLocationName} anchor={{ x: 0.5, y: 1 }} zIndex={1000} pinColor="#2563EB" tracksViewChanges={false}>
+            <View style={styles.driverMarker}>
+              <View style={styles.driverAccuracyRing}>
+                <View style={styles.driverLocationDot} />
+              </View>
+            </View>
           </Marker>
           {towServices.slice(0, 3).map((service, index) => <Marker key={service.id} coordinate={{ latitude: service.latitude, longitude: service.longitude }} title={service.name} description={`${service.distance.toFixed(1)} km away`} pinColor="#FF8C42" zIndex={500 - index} tracksViewChanges={false} />)}
         </MapView>}
@@ -297,7 +307,7 @@ const styles = StyleSheet.create({
   menuIcon: { padding: 8, marginRight: 10 }, title: { flex: 1, fontSize: 18, fontWeight: '600', color: '#333' },
   mapContainer: { height: 200, borderRadius: 12, overflow: 'hidden', margin: 16, borderWidth: 1, borderColor: '#ddd', backgroundColor: '#e8e8e8', position: 'relative' }, map: { flex: 1 },
   refreshButton: { position: 'absolute', top: 12, right: 12, width: 44, height: 44, borderRadius: 22, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3, zIndex: 10 },
-  driverMarker: { width: 52, height: 52, justifyContent: 'center', alignItems: 'center', elevation: 7, shadowColor: '#1E40AF', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.28, shadowRadius: 4 },
+  driverMarker: { width: 52, height: 52, justifyContent: 'center', alignItems: 'center', elevation: 7, shadowColor: '#1E40AF', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.28, shadowRadius: 4 }, driverAccuracyRing: { width: 28, height: 28, borderRadius: 14, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(37, 99, 235, 0.2)', borderWidth: 2, borderColor: '#FFFFFF' }, driverLocationDot: { width: 14, height: 14, borderRadius: 7, backgroundColor: '#2563EB', borderWidth: 2, borderColor: '#FFFFFF' },
   locationBanner: { position: 'absolute', left: 12, right: 64, bottom: 12, minHeight: 44, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255, 255, 255, 0.95)', borderWidth: 1, borderColor: '#DBEAFE', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.14, shadowRadius: 5, elevation: 4 }, locationBannerText: { flex: 1, fontSize: 12, lineHeight: 16, fontWeight: '800', color: '#1F2937' },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' }, loadingText: { marginTop: 12, fontSize: 16, color: '#666' }, errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }, errorText: { textAlign: 'center', fontSize: 16, color: '#d32f2f', marginBottom: 16 },
   retryButton: { paddingHorizontal: 14, paddingVertical: 10, borderRadius: 6, backgroundColor: '#FF8C42', marginTop: 14 }, retryText: { color: '#fff', fontWeight: '700' }, listContainer: { flex: 1 }, listContentContainer: { paddingHorizontal: 16, paddingVertical: 12, paddingBottom: 100 },

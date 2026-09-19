@@ -7,7 +7,6 @@ import { AppIcon } from '../components/app-icon';
 import { BottomNav } from '../components/bottom-nav';
 import { Drawer } from '../components/drawer';
 import { TouchableOpacity } from '../components/haptic-touchable-opacity';
-import { SmsMessageModal } from '../components/sms-message-modal';
 import { ThemedText } from '../components/themed-text';
 import { ThemedView } from '../components/themed-view';
 
@@ -20,7 +19,7 @@ import { ThemedView } from '../components/themed-view';
 
 import * as Location from 'expo-location';
 import MapView, { Marker, type NativeMapView } from '../components/native-map';
-import { saveDriverLocation } from '../services/driver-location-cache';
+import { getCachedDriverLocation, saveDriverLocation } from '../services/driver-location-cache';
 import { fetchNearbyShops, ShopLocation } from '../services/location-service';
 import { getLocationName } from '../services/location-label';
 import { recordMechanicContactRequest } from '../services/request-history-recorder';
@@ -69,8 +68,6 @@ export default function MapScreen() {
   const [driverLocationName, setDriverLocationName] = useState('Finding your exact location...');
   const [loading, setLoading] = useState(true);
   const [isTracking, setIsTracking] = useState(false);
-  const [smsMechanic, setSmsMechanic] = useState<Mechanic | null>(null);
-  const [smsSending, setSmsSending] = useState(false);
   const driverName = (params.driverName as string) || 'Driver';
   const locationWatcherRef = useRef<any>(null);
 
@@ -241,7 +238,14 @@ export default function MapScreen() {
         );
       } catch (error) {
         console.error('Error getting location:', error);
-        setErrorMsg('Unable to fetch location');
+        const cachedLocation = await getCachedDriverLocation();
+        if (cachedLocation) {
+          setDriverLocation({ latitude: cachedLocation.latitude, longitude: cachedLocation.longitude });
+          setRegion({ latitude: cachedLocation.latitude, longitude: cachedLocation.longitude, latitudeDelta: 0.05, longitudeDelta: 0.05 });
+          updateNearbyMechanics(cachedLocation.latitude, cachedLocation.longitude, setNearbyMechanics).catch(() => {});
+        } else {
+          setErrorMsg('Unable to fetch location');
+        }
         setLoading(false);
       }
     })();
@@ -315,18 +319,7 @@ export default function MapScreen() {
     });
   };
 
-  const handleSMS = (mechanic: Mechanic) => {
-    setSmsMechanic(mechanic);
-  };
-
-  const sendSMS = async (message: string) => {
-    if (!smsMechanic || smsSending) {
-      return;
-    }
-
-    const mechanic = smsMechanic;
-    setSmsSending(true);
-
+  const handleSMS = async (mechanic: Mechanic) => {
     try {
       const requestLocationName = await getDriverLocationLabel();
       await recordMechanicContactRequest({
@@ -340,18 +333,11 @@ export default function MapScreen() {
         },
         driverName,
         driverLocation: requestLocationName,
-        problemDescription: message,
       });
 
-      setSmsMechanic(null);
-      const bodySeparator = Platform.OS === 'ios' ? '&' : '?';
-      await Linking.openURL(
-        `sms:${mechanic.phone}${bodySeparator}body=${encodeURIComponent(message)}`
-      );
+      await Linking.openURL(`sms:${mechanic.phone.replace(/[^\d+]/g, '')}`);
     } catch (error) {
       console.error('Unable to send SMS request:', error);
-    } finally {
-      setSmsSending(false);
     }
   };
 
@@ -560,13 +546,6 @@ export default function MapScreen() {
 
       <BottomNav />
       <Drawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} driverName={driverName} role="driver" />
-      <SmsMessageModal
-        visible={Boolean(smsMechanic)}
-        recipientName={smsMechanic?.name || ''}
-        sending={smsSending}
-        onCancel={() => setSmsMechanic(null)}
-        onSend={sendSMS}
-      />
     </ThemedView>
   );
 }

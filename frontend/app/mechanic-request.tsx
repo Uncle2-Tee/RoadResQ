@@ -12,6 +12,7 @@ import { ThemedText } from '../components/themed-text';
 import { ThemedView } from '../components/themed-view';
 import { useResponsive } from '../hooks/use-responsive';
 import { getLocationName } from '../services/location-label';
+import { getCachedDriverLocation } from '../services/driver-location-cache';
 
 const MECHANIC_NAME_KEY = 'mechanicName';
 
@@ -262,11 +263,21 @@ export default function MechanicRequestScreen() {
         const { latitude, longitude } = liveLocation.coords;
         await applyLocationData(latitude, longitude);
       } else if (!hasUsableLocation) {
-        Alert.alert('Error', 'Location is taking longer than expected. Please try again.');
+        const cachedLocation = await getCachedDriverLocation();
+        if (cachedLocation) {
+          await applyLocationData(cachedLocation.latitude, cachedLocation.longitude);
+        } else {
+          Alert.alert('Error', 'Location is taking longer than expected. Please try again.');
+        }
       }
     } catch (error) {
       console.error('Error loading mechanic shops:', error);
-      Alert.alert('Error', 'Unable to load nearby mechanics. Please try again.');
+      const cachedLocation = await getCachedDriverLocation();
+      if (cachedLocation) {
+        await applyLocationData(cachedLocation.latitude, cachedLocation.longitude);
+      } else {
+        Alert.alert('Error', 'Unable to load nearby mechanics. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

@@ -35,7 +35,7 @@ type ContactRecord = {
 
 type TowRecord = {
   id: string;
-  type: 'tow';
+  type: 'tow' | 'emergency';
   shopId?: string;
   mechanicId?: string;
   serviceName: string;
@@ -164,6 +164,65 @@ export async function recordMechanicContactRequest({
     problemDescription: issue,
   });
   await touchRequestOverview();
+}
+
+export async function recordEmergencyRequest({
+  provider,
+  driverName,
+  driverLocation,
+  problemDescription,
+}: {
+  provider: {
+    id?: string;
+    mechanicId?: string | null;
+    name: string;
+    phone: string;
+  };
+  driverName: string;
+  driverLocation?: string;
+  problemDescription?: string;
+}) {
+  const { driverPhone, driverId } = await getDriverIdentifiers();
+  const timestamp = new Date().toISOString();
+  const location = driverLocation || 'Location not provided';
+  const providerOwnerId = provider.mechanicId || provider.id;
+  const requestId = `EMERGENCY-${Date.now()}`;
+  const emergencyRecord: TowRecord = {
+    id: requestId,
+    type: 'emergency',
+    shopId: provider.id,
+    mechanicId: providerOwnerId || provider.id,
+    serviceName: provider.name,
+    servicePhone: provider.phone,
+    driverName,
+    location,
+    problemDescription: problemDescription?.trim() || 'Emergency assistance requested',
+    price: 0,
+    currency: 'GHS',
+    estimatedTime: 10,
+    timestamp,
+    status: 'confirmed',
+  };
+
+  await appendUniqueRecord<TowRecord>(TOW_REQUESTS_STORAGE_KEY, emergencyRecord);
+  await touchRequestOverview();
+  syncRequestHistoryInBackground({
+    requestId,
+    type: 'emergency',
+    status: 'confirmed',
+    driverId,
+    driverName,
+    driverPhone,
+    driverLocation: location,
+    mechanicId: providerOwnerId || provider.id,
+    providerName: provider.name,
+    providerPhone: provider.phone,
+    problemDescription: emergencyRecord.problemDescription,
+    price: 0,
+    currency: 'GHS',
+    estimatedTime: 10,
+  });
+  return emergencyRecord;
 }
 
 export async function recordTowRequest({

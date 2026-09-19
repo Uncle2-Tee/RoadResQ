@@ -128,7 +128,7 @@ export default function TowerDashboardScreen() {
       providerNames.map((providerName) => providerName.trim().toLocaleLowerCase())
     );
     const ownTowRequests = requests.filter((request) => {
-      if (request.type !== 'tow') {
+      if (!['tow', 'emergency'].includes(request.type)) {
         return false;
       }
 

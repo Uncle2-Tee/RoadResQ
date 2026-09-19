@@ -78,7 +78,20 @@ interface ContactRecord {
   reviews?: number;
 }
 
-type AllRequests = TowRequest | ServiceRequest | ContactRecord;
+interface EmergencyRequest {
+  id: string;
+  type: 'emergency';
+  serviceName: string;
+  servicePhone: string;
+  driverName: string;
+  location: string;
+  problemDescription?: string;
+  timestamp: string;
+  status: string;
+  acceptedBy?: string;
+}
+
+type AllRequests = TowRequest | ServiceRequest | ContactRecord | EmergencyRequest;
 
 const MECHANIC_NAME_KEY = 'mechanicName';
 const USER_ID_KEY = 'userId';
@@ -86,6 +99,9 @@ const SERVICE_REQUESTS_STORAGE_KEY = 'serviceRequests';
 const TOW_REQUESTS_STORAGE_KEY = 'towRequests';
 const CONTACT_REQUESTS_STORAGE_KEY = 'contactRequests';
 const CONTACT_REQUEST_TYPES = ['call', 'sms', 'chat'];
+
+const isEmergencyRequest = (request: AllRequests): request is EmergencyRequest =>
+  (request as EmergencyRequest).type === 'emergency';
 
 const isPendingRequestStatus = (status?: string) => {
   const normalizedStatus = (status || '').toLowerCase();
@@ -98,6 +114,21 @@ const isCallOnlyHistoryRequest = (request: AllRequests) =>
     (request as TowRequest).problemDescription?.trim().toLowerCase() === 'called');
 
 const mapDatabaseRequest = (request: RequestHistoryItem): AllRequests => {
+  if (request.type === 'emergency') {
+    return {
+      id: request.requestId,
+      type: 'emergency',
+      serviceName: request.providerName,
+      servicePhone: request.providerPhone || '',
+      driverName: request.driverName,
+      location: request.driverLocation || 'Location not provided',
+      problemDescription: request.problemDescription || 'Emergency assistance requested',
+      timestamp: request.requestedAt,
+      status: request.status,
+      acceptedBy: request.acceptedBy || undefined,
+    };
+  }
+
   if (request.type === 'tow') {
     return {
       id: request.requestId,
@@ -156,6 +187,19 @@ export default function MechanicInboxScreen() {
   const [loading, setLoading] = useState(true);
   const seenPendingRequestIdsRef = useRef<Set<string>>(new Set());
 
+  const sortRequestsByPriority = (requests: AllRequests[]) =>
+    [...requests].sort((a, b) => {
+      const emergencyWeight = (request: AllRequests) => (isEmergencyRequest(request) ? 0 : 1);
+      const timeA = new Date((a as any).timestamp || (a as any).createdAt || 0).getTime();
+      const timeB = new Date((b as any).timestamp || (b as any).createdAt || 0).getTime();
+
+      const priorityDiff = emergencyWeight(a) - emergencyWeight(b);
+      if (priorityDiff !== 0) {
+        return priorityDiff;
+      }
+      return timeB - timeA;
+    });
+
   const loadAllRequests = async (options: { silent?: boolean } = {}) => {
     try {
       if (!options.silent) {
@@ -194,7 +238,9 @@ export default function MechanicInboxScreen() {
       }
 
       const applyRequests = (requests: AllRequests[]) => {
-        const visibleRequests = requests.filter((request) => !isCallOnlyHistoryRequest(request));
+        const visibleRequests = sortRequestsByPriority(
+          requests.filter((request) => !isCallOnlyHistoryRequest(request))
+        );
         setAllRequests(visibleRequests);
 
         const pendingRequests = visibleRequests.filter((item) => {
@@ -497,6 +543,10 @@ export default function MechanicInboxScreen() {
   };
 
   const getStatusColor = (request: AllRequests) => {
+    if (isEmergencyRequest(request)) {
+      return request.status === 'accepted' ? styles.statusAccepted : styles.statusDeclined;
+    }
+
     if (CONTACT_REQUEST_TYPES.includes((request as ContactRecord).type)) {
       const status = (request as ContactRecord).status;
       if (status === 'called') return styles.statusCalled;
@@ -548,6 +598,7 @@ export default function MechanicInboxScreen() {
           </View>
         ) : (
           allRequests.map((request) => {
+            const isEmergency = isEmergencyRequest(request);
             const isTow = (request as TowRequest).type === 'tow';
             const isContact = CONTACT_REQUEST_TYPES.includes((request as ContactRecord).type);
             const contactType = isContact ? (request as ContactRecord).type : null;
@@ -555,24 +606,30 @@ export default function MechanicInboxScreen() {
             const canDelete = request.status !== 'accepted';
 
             return (
-              <BlinkingCard key={request.id} active={isServicePending} style={styles.requestCard}>
+              <BlinkingCard key={request.id} active={isServicePending || isEmergency} style={styles.requestCard}>
                 <View style={styles.requestHeader}>
                   <View style={styles.requestTitleContainer}>
-                    {isTow ? (
+                    {isEmergency ? (
+                      <AppIcon name="alert" size={28} color="#DC2626" style={styles.requestIcon} />
+                    ) : isTow ? (
                       <Image source={towImage} style={styles.requestTowImage} resizeMode="cover" />
                     ) : (
                       <AppIcon name={contactType === 'call' ? 'phone' : contactType === 'sms' ? 'message' : contactType === 'chat' ? 'message' : 'wrench'} size={28} color="#FF8C42" style={styles.requestIcon} />
                     )}
                     <View style={styles.requestTitleText}>
                       <ThemedText style={styles.requestTitle}>
-                        {isTow
+                        {isEmergency
+                          ? (request as EmergencyRequest).driverName
+                          : isTow
                           ? (request as TowRequest).serviceName
                           : isContact
                           ? (request as ContactRecord).driverName
                           : (request as ServiceRequest).driverName}
                       </ThemedText>
                       <ThemedText style={styles.requestType}>
-                        {isTow
+                        {isEmergency
+                          ? 'Emergency Assistance'
+                          : isTow
                           ? 'Tow Service'
                           : contactType === 'call'
                           ? 'Mechanic Call'
@@ -604,7 +661,28 @@ export default function MechanicInboxScreen() {
                 </View>
 
                 <View style={styles.requestDetails}>
-                  {isContact ? (
+                  {isEmergency ? (
+                    <>
+                      <View style={styles.detailRow}>
+                        <ThemedText style={styles.detailLabel}>Issue:</ThemedText>
+                        <ThemedText style={styles.detailValue}>
+                          {(request as EmergencyRequest).problemDescription || 'Emergency assistance requested'}
+                        </ThemedText>
+                      </View>
+                      <View style={styles.detailRow}>
+                        <ThemedText style={styles.detailLabel}>Location:</ThemedText>
+                        <LocationNameText
+                          style={styles.detailValue}
+                          numberOfLines={2}
+                          location={(request as EmergencyRequest).location}
+                        />
+                      </View>
+                      <View style={styles.detailRow}>
+                        <ThemedText style={styles.detailLabel}>Phone:</ThemedText>
+                        <ThemedText style={styles.detailValue}>{(request as EmergencyRequest).servicePhone}</ThemedText>
+                      </View>
+                    </>
+                  ) : isContact ? (
                     <>
                       <View style={styles.detailRow}>
                         <ThemedText style={styles.detailLabel}>Issue:</ThemedText>

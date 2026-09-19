@@ -114,7 +114,7 @@ interface User {
 export interface RequestHistoryItem {
   id: string;
   requestId: string;
-  type: 'service' | 'tow' | 'call' | 'sms' | 'chat';
+  type: 'service' | 'tow' | 'call' | 'sms' | 'chat' | 'emergency';
   status: 'pending' | 'confirmed' | 'accepted' | 'declined' | 'cancelled' | 'called' | 'messaged' | 'chat';
   driverId?: string | null;
   driverName: string;
@@ -135,7 +135,7 @@ export interface RequestHistoryItem {
 
 export interface CreateRequestHistoryData {
   requestId: string;
-  type: 'service' | 'tow' | 'call' | 'sms' | 'chat';
+  type: 'service' | 'tow' | 'call' | 'sms' | 'chat' | 'emergency';
   shopId?: string | null;
   status?: RequestHistoryItem['status'];
   driverId?: string | null;
@@ -1661,23 +1661,21 @@ export async function getMechanicShops(options: { forceRefresh?: boolean; provid
 
       const resultShops = withoutRemovedLocalMechanicShops((result.shops || []) as MechanicShopItem[])
         .filter((shop) => isApprovedMechanicShop(shop, options.includeInactive));
+      const shops = await setMechanicShopsLocalCache(resultShops);
       if (providerType) {
-        return resultShops;
+        return shops.filter((shop) => shop.providerType === providerType);
       }
 
-      const shops = await setMechanicShopsLocalCache(resultShops);
       syncOfflineChanges().catch(() => {});
       return shops;
     } catch (error) {
       mechanicShopsRequest = null;
 
-      if (options.databaseOnly) {
-        const message = error instanceof Error ? error.message : 'Network error - Backend may not be running or URL is incorrect';
-        throw new Error(`Unable to load mechanic shops from the database: ${message}`);
-      }
-
       if (cachedShops) {
-        warnCachedFallback(`mechanic-shops:${providerType || 'all'}`, '[API] Using cached mechanic shops after load failure');
+        warnCachedFallback(
+          `mechanic-shops:${providerType || 'all'}`,
+          `[API] Using cached ${providerType || ''} mechanic shops after load failure`.replace(/  +/g, ' ')
+        );
         if (providerType) {
           return cachedShops.filter((shop) => shop.providerType === providerType);
         }
@@ -1685,6 +1683,10 @@ export async function getMechanicShops(options: { forceRefresh?: boolean; provid
       }
 
       const message = error instanceof Error ? error.message : 'Network error - Backend may not be running or URL is incorrect';
+      if (options.databaseOnly) {
+        throw new Error(`Unable to load mechanic shops from the database: ${message}`);
+      }
+
       console.error('[API] Get mechanic shops error:', message);
       throw new Error(`Load mechanic shops error: ${message}`);
     }
