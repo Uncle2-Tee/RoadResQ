@@ -57,7 +57,10 @@ export const ModelName = {
   RequestHistory: 'RequestHistory',
   MechanicShop: 'MechanicShop',
   TowShop: 'TowShop',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  ProviderReview: 'ProviderReview',
+  DriverLocationTrack: 'DriverLocationTrack',
+  ProviderLocationTrack: 'ProviderLocationTrack'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -223,6 +226,47 @@ export const PaymentScalarFieldEnum = {
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const ProviderReviewScalarFieldEnum = {
+  id: 'id',
+  driverId: 'driverId',
+  providerType: 'providerType',
+  providerId: 'providerId',
+  mechanicShopId: 'mechanicShopId',
+  towShopId: 'towShopId',
+  rating: 'rating',
+  reviewText: 'reviewText',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProviderReviewScalarFieldEnum = (typeof ProviderReviewScalarFieldEnum)[keyof typeof ProviderReviewScalarFieldEnum]
+
+
+export const DriverLocationTrackScalarFieldEnum = {
+  id: 'id',
+  driverId: 'driverId',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  accuracy: 'accuracy',
+  source: 'source',
+  recordedAt: 'recordedAt'
+} as const
+
+export type DriverLocationTrackScalarFieldEnum = (typeof DriverLocationTrackScalarFieldEnum)[keyof typeof DriverLocationTrackScalarFieldEnum]
+
+
+export const ProviderLocationTrackScalarFieldEnum = {
+  id: 'id',
+  providerId: 'providerId',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  accuracy: 'accuracy',
+  recordedAt: 'recordedAt'
+} as const
+
+export type ProviderLocationTrackScalarFieldEnum = (typeof ProviderLocationTrackScalarFieldEnum)[keyof typeof ProviderLocationTrackScalarFieldEnum]
 
 
 export const SortOrder = {

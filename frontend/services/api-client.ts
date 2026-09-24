@@ -37,6 +37,15 @@ const paymentRecordsCache = new Map<string, { timestamp: number; payments: Payme
 const paymentRecordsRequests = new Map<string, Promise<PaymentRecordItem[]>>();
 const cachedFallbackWarningTimestamps = new Map<string, number>();
 
+export type FuelStation = {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  address: string;
+  brand: string;
+};
+
 const logDebug = (...args: unknown[]) => {
   if (__DEV__) {
     console.log(...args);
@@ -241,6 +250,7 @@ export interface MechanicShopItem {
   providerType: 'registered' | 'unregistered' | string;
   status: string;
   approvalStatus?: 'pending' | 'approved' | 'rejected' | string;
+  rating?: number | null;
   bankName?: string | null;
   bankCode?: string | null;
   accountNumber?: string | null;
@@ -471,6 +481,20 @@ async function findHealthyApiBaseUrl() {
     `Backend is not reachable. Start the backend with "npm run dev" in BreakdownAssistApp, then make sure EXPO_PUBLIC_API_URL points to this computer. Tried: ${candidates.join(', ')}`
   );
 }
+
+export const fetchNearbyFuelStations = async (latitude: number, longitude: number): Promise<FuelStation[]> => {
+  const apiBaseUrl = await findHealthyApiBaseUrl();
+  const response = await apiFetch(
+    `${apiBaseUrl}/api/fuel-stations?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}`
+  );
+  const data = await parseJsonResponse<{ stations?: FuelStation[]; error?: string }>(response, 'Fuel station lookup');
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Unable to load nearby fuel stations');
+  }
+
+  return Array.isArray(data.stations) ? data.stations : [];
+};
 
 const withoutRemovedLocalMechanicShops = (shops: MechanicShopItem[]) =>
   shops.filter((shop) => !REMOVED_LOCAL_MECHANIC_SHOP_NAMES.has(normalizeShopNameForRemoval(shop.shopName)));
@@ -1318,6 +1342,7 @@ export async function getPaymentRecords(params: {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'x-user-id': (await AsyncStorage.getItem('userId')) || '',
         },
       });
 
@@ -1350,6 +1375,90 @@ export async function getPaymentRecords(params: {
 
   paymentRecordsRequests.set(cacheKey, requestPromise);
   return requestPromise;
+}
+
+export async function saveProviderRating(data: {
+  providerId: string;
+  providerType: 'MECHANIC' | 'TOW';
+  rating: number;
+}): Promise<void> {
+  const apiBaseUrl = await findHealthyApiBaseUrl();
+  const [userId, sessionId] = await Promise.all([
+    AsyncStorage.getItem('userId'),
+    AsyncStorage.getItem('userSessionId'),
+  ]);
+  const response = await apiFetch(`${apiBaseUrl}/api/reviews`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-user-id': userId || '',
+      'x-session-id': sessionId || '',
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await parseJsonResponse<{ error?: string }>(response, 'Save provider rating');
+  if (!response.ok) throw new Error(result.error || 'Unable to save provider rating');
+}
+
+export async function saveDriverLocationToApi(data: {
+  latitude: number;
+  longitude: number;
+  accuracy?: number | null;
+}): Promise<void> {
+  const apiBaseUrl = await findHealthyApiBaseUrl();
+  const [userId, sessionId] = await Promise.all([
+    AsyncStorage.getItem('userId'),
+    AsyncStorage.getItem('userSessionId'),
+  ]);
+  const response = await apiFetch(`${apiBaseUrl}/api/locations`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-user-id': userId || '',
+      'x-session-id': sessionId || '',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const result = await parseJsonResponse<{ error?: string }>(response, 'Save driver location');
+    throw new Error(result.error || 'Unable to save driver location');
+  }
+}
+
+export type ProviderLocation = {
+  providerId: string;
+  latitude: number;
+  longitude: number;
+  accuracy?: number | null;
+  recordedAt: string;
+};
+
+export async function saveProviderLocationToApi(data: {
+  latitude: number;
+  longitude: number;
+  accuracy?: number | null;
+}): Promise<void> {
+  const apiBaseUrl = await findHealthyApiBaseUrl();
+  const [userId, sessionId] = await Promise.all([
+    AsyncStorage.getItem('userId'),
+    AsyncStorage.getItem('userSessionId'),
+  ]);
+  const response = await apiFetch(`${apiBaseUrl}/api/locations`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-user-id': userId || '', 'x-session-id': sessionId || '' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error('Unable to save provider location');
+}
+
+export async function getProviderLocations(providerIds: string[]): Promise<ProviderLocation[]> {
+  if (providerIds.length === 0) return [];
+  const apiBaseUrl = await findHealthyApiBaseUrl();
+  const query = providerIds.map((id) => `providerId=${encodeURIComponent(id)}`).join('&');
+  const response = await apiFetch(`${apiBaseUrl}/api/locations?${query}`);
+  const data = await parseJsonResponse<{ locations?: ProviderLocation[]; error?: string }>(response, 'Load provider locations');
+  if (!response.ok) throw new Error(data.error || 'Unable to load provider locations');
+  return data.locations || [];
 }
 
 export async function updateRequestHistoryStatus(data: {

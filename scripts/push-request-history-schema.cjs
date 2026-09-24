@@ -5,16 +5,117 @@ const { Client } = require('pg');
 const ddl = `
 DO $$
 BEGIN
-  CREATE TYPE "RequestType" AS ENUM ('SERVICE', 'TOW');
-EXCEPTION
-  WHEN duplicate_object THEN NULL;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_type t
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestType' AND n.nspname = 'public'
+  ) THEN
+    CREATE TYPE "RequestType" AS ENUM ('SERVICE', 'TOW', 'CALL', 'SMS', 'CHAT', 'EMERGENCY');
+  END IF;
 END $$;
 
 DO $$
 BEGIN
-  CREATE TYPE "RequestStatus" AS ENUM ('PENDING', 'CONFIRMED', 'ACCEPTED', 'DECLINED', 'CANCELLED');
-EXCEPTION
-  WHEN duplicate_object THEN NULL;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestType' AND n.nspname = 'public' AND e.enumlabel = 'CALL'
+  ) THEN
+    ALTER TYPE "RequestType" ADD VALUE 'CALL';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestType' AND n.nspname = 'public' AND e.enumlabel = 'SMS'
+  ) THEN
+    ALTER TYPE "RequestType" ADD VALUE 'SMS';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestType' AND n.nspname = 'public' AND e.enumlabel = 'CHAT'
+  ) THEN
+    ALTER TYPE "RequestType" ADD VALUE 'CHAT';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestType' AND n.nspname = 'public' AND e.enumlabel = 'EMERGENCY'
+  ) THEN
+    ALTER TYPE "RequestType" ADD VALUE 'EMERGENCY';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_type t
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestStatus' AND n.nspname = 'public'
+  ) THEN
+    CREATE TYPE "RequestStatus" AS ENUM ('PENDING', 'CONFIRMED', 'ACCEPTED', 'DECLINED', 'CANCELLED', 'CALLED', 'MESSAGED', 'CHAT');
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestStatus' AND n.nspname = 'public' AND e.enumlabel = 'CALLED'
+  ) THEN
+    ALTER TYPE "RequestStatus" ADD VALUE 'CALLED';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestStatus' AND n.nspname = 'public' AND e.enumlabel = 'MESSAGED'
+  ) THEN
+    ALTER TYPE "RequestStatus" ADD VALUE 'MESSAGED';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON t.oid = e.enumtypid
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE t.typname = 'RequestStatus' AND n.nspname = 'public' AND e.enumlabel = 'CHAT'
+  ) THEN
+    ALTER TYPE "RequestStatus" ADD VALUE 'CHAT';
+  END IF;
 END $$;
 
 CREATE TABLE IF NOT EXISTS "RequestHistory" (

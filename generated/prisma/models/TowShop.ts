@@ -333,6 +333,7 @@ export type TowShopWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"TowShop"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TowShop"> | Date | string
   mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  providerReviews?: Prisma.ProviderReviewListRelationFilter
 }
 
 export type TowShopOrderByWithRelationInput = {
@@ -356,6 +357,7 @@ export type TowShopOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   mechanic?: Prisma.UserOrderByWithRelationInput
+  providerReviews?: Prisma.ProviderReviewOrderByRelationAggregateInput
 }
 
 export type TowShopWhereUniqueInput = Prisma.AtLeast<{
@@ -382,6 +384,7 @@ export type TowShopWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"TowShop"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TowShop"> | Date | string
   mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  providerReviews?: Prisma.ProviderReviewListRelationFilter
 }, "id" | "shopId" | "licenseNumber">
 
 export type TowShopOrderByWithAggregationInput = {
@@ -456,6 +459,7 @@ export type TowShopCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   mechanic?: Prisma.UserCreateNestedOneWithoutTowShopsInput
+  providerReviews?: Prisma.ProviderReviewCreateNestedManyWithoutTowShopInput
 }
 
 export type TowShopUncheckedCreateInput = {
@@ -478,6 +482,7 @@ export type TowShopUncheckedCreateInput = {
   paystackSubaccountCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  providerReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutTowShopInput
 }
 
 export type TowShopUpdateInput = {
@@ -500,6 +505,7 @@ export type TowShopUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mechanic?: Prisma.UserUpdateOneWithoutTowShopsNestedInput
+  providerReviews?: Prisma.ProviderReviewUpdateManyWithoutTowShopNestedInput
 }
 
 export type TowShopUncheckedUpdateInput = {
@@ -522,6 +528,7 @@ export type TowShopUncheckedUpdateInput = {
   paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  providerReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutTowShopNestedInput
 }
 
 export type TowShopCreateManyInput = {
@@ -675,6 +682,11 @@ export type TowShopSumOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
 }
 
+export type TowShopNullableScalarRelationFilter = {
+  is?: Prisma.TowShopWhereInput | null
+  isNot?: Prisma.TowShopWhereInput | null
+}
+
 export type TowShopCreateNestedManyWithoutMechanicInput = {
   create?: Prisma.XOR<Prisma.TowShopCreateWithoutMechanicInput, Prisma.TowShopUncheckedCreateWithoutMechanicInput> | Prisma.TowShopCreateWithoutMechanicInput[] | Prisma.TowShopUncheckedCreateWithoutMechanicInput[]
   connectOrCreate?: Prisma.TowShopCreateOrConnectWithoutMechanicInput | Prisma.TowShopCreateOrConnectWithoutMechanicInput[]
@@ -717,6 +729,22 @@ export type TowShopUncheckedUpdateManyWithoutMechanicNestedInput = {
   deleteMany?: Prisma.TowShopScalarWhereInput | Prisma.TowShopScalarWhereInput[]
 }
 
+export type TowShopCreateNestedOneWithoutProviderReviewsInput = {
+  create?: Prisma.XOR<Prisma.TowShopCreateWithoutProviderReviewsInput, Prisma.TowShopUncheckedCreateWithoutProviderReviewsInput>
+  connectOrCreate?: Prisma.TowShopCreateOrConnectWithoutProviderReviewsInput
+  connect?: Prisma.TowShopWhereUniqueInput
+}
+
+export type TowShopUpdateOneWithoutProviderReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.TowShopCreateWithoutProviderReviewsInput, Prisma.TowShopUncheckedCreateWithoutProviderReviewsInput>
+  connectOrCreate?: Prisma.TowShopCreateOrConnectWithoutProviderReviewsInput
+  upsert?: Prisma.TowShopUpsertWithoutProviderReviewsInput
+  disconnect?: Prisma.TowShopWhereInput | boolean
+  delete?: Prisma.TowShopWhereInput | boolean
+  connect?: Prisma.TowShopWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TowShopUpdateToOneWithWhereWithoutProviderReviewsInput, Prisma.TowShopUpdateWithoutProviderReviewsInput>, Prisma.TowShopUncheckedUpdateWithoutProviderReviewsInput>
+}
+
 export type TowShopCreateWithoutMechanicInput = {
   id?: string
   shopId: string
@@ -736,6 +764,7 @@ export type TowShopCreateWithoutMechanicInput = {
   paystackSubaccountCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  providerReviews?: Prisma.ProviderReviewCreateNestedManyWithoutTowShopInput
 }
 
 export type TowShopUncheckedCreateWithoutMechanicInput = {
@@ -757,6 +786,7 @@ export type TowShopUncheckedCreateWithoutMechanicInput = {
   paystackSubaccountCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  providerReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutTowShopInput
 }
 
 export type TowShopCreateOrConnectWithoutMechanicInput = {
@@ -810,6 +840,110 @@ export type TowShopScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"TowShop"> | Date | string
 }
 
+export type TowShopCreateWithoutProviderReviewsInput = {
+  id?: string
+  shopId: string
+  shopName: string
+  phone: string
+  location: string
+  specialization: string
+  licenseNumber: string
+  latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  approvalStatus?: string
+  bankName?: string | null
+  bankCode?: string | null
+  accountNumber?: string | null
+  accountName?: string | null
+  paystackSubaccountCode?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mechanic?: Prisma.UserCreateNestedOneWithoutTowShopsInput
+}
+
+export type TowShopUncheckedCreateWithoutProviderReviewsInput = {
+  id?: string
+  shopId: string
+  mechanicId?: string | null
+  shopName: string
+  phone: string
+  location: string
+  specialization: string
+  licenseNumber: string
+  latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  approvalStatus?: string
+  bankName?: string | null
+  bankCode?: string | null
+  accountNumber?: string | null
+  accountName?: string | null
+  paystackSubaccountCode?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TowShopCreateOrConnectWithoutProviderReviewsInput = {
+  where: Prisma.TowShopWhereUniqueInput
+  create: Prisma.XOR<Prisma.TowShopCreateWithoutProviderReviewsInput, Prisma.TowShopUncheckedCreateWithoutProviderReviewsInput>
+}
+
+export type TowShopUpsertWithoutProviderReviewsInput = {
+  update: Prisma.XOR<Prisma.TowShopUpdateWithoutProviderReviewsInput, Prisma.TowShopUncheckedUpdateWithoutProviderReviewsInput>
+  create: Prisma.XOR<Prisma.TowShopCreateWithoutProviderReviewsInput, Prisma.TowShopUncheckedCreateWithoutProviderReviewsInput>
+  where?: Prisma.TowShopWhereInput
+}
+
+export type TowShopUpdateToOneWithWhereWithoutProviderReviewsInput = {
+  where?: Prisma.TowShopWhereInput
+  data: Prisma.XOR<Prisma.TowShopUpdateWithoutProviderReviewsInput, Prisma.TowShopUncheckedUpdateWithoutProviderReviewsInput>
+}
+
+export type TowShopUpdateWithoutProviderReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shopId?: Prisma.StringFieldUpdateOperationsInput | string
+  shopName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mechanic?: Prisma.UserUpdateOneWithoutTowShopsNestedInput
+}
+
+export type TowShopUncheckedUpdateWithoutProviderReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shopId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shopName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type TowShopCreateManyMechanicInput = {
   id?: string
   shopId: string
@@ -850,6 +984,7 @@ export type TowShopUpdateWithoutMechanicInput = {
   paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  providerReviews?: Prisma.ProviderReviewUpdateManyWithoutTowShopNestedInput
 }
 
 export type TowShopUncheckedUpdateWithoutMechanicInput = {
@@ -871,6 +1006,7 @@ export type TowShopUncheckedUpdateWithoutMechanicInput = {
   paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  providerReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutTowShopNestedInput
 }
 
 export type TowShopUncheckedUpdateManyWithoutMechanicInput = {
@@ -895,6 +1031,35 @@ export type TowShopUncheckedUpdateManyWithoutMechanicInput = {
 }
 
 
+/**
+ * Count Type TowShopCountOutputType
+ */
+
+export type TowShopCountOutputType = {
+  providerReviews: number
+}
+
+export type TowShopCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  providerReviews?: boolean | TowShopCountOutputTypeCountProviderReviewsArgs
+}
+
+/**
+ * TowShopCountOutputType without action
+ */
+export type TowShopCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TowShopCountOutputType
+   */
+  select?: Prisma.TowShopCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TowShopCountOutputType without action
+ */
+export type TowShopCountOutputTypeCountProviderReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderReviewWhereInput
+}
+
 
 export type TowShopSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -917,6 +1082,8 @@ export type TowShopSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   mechanic?: boolean | Prisma.TowShop$mechanicArgs<ExtArgs>
+  providerReviews?: boolean | Prisma.TowShop$providerReviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.TowShopCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["towShop"]>
 
 export type TowShopSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -990,6 +1157,8 @@ export type TowShopSelectScalar = {
 export type TowShopOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shopId" | "mechanicId" | "shopName" | "phone" | "location" | "specialization" | "licenseNumber" | "latitude" | "longitude" | "status" | "approvalStatus" | "bankName" | "bankCode" | "accountNumber" | "accountName" | "paystackSubaccountCode" | "createdAt" | "updatedAt", ExtArgs["result"]["towShop"]>
 export type TowShopInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   mechanic?: boolean | Prisma.TowShop$mechanicArgs<ExtArgs>
+  providerReviews?: boolean | Prisma.TowShop$providerReviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.TowShopCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TowShopIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   mechanic?: boolean | Prisma.TowShop$mechanicArgs<ExtArgs>
@@ -1002,6 +1171,7 @@ export type $TowShopPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "TowShop"
   objects: {
     mechanic: Prisma.$UserPayload<ExtArgs> | null
+    providerReviews: Prisma.$ProviderReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1418,6 +1588,7 @@ readonly fields: TowShopFieldRefs;
 export interface Prisma__TowShopClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   mechanic<T extends Prisma.TowShop$mechanicArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TowShop$mechanicArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  providerReviews<T extends Prisma.TowShop$providerReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TowShop$providerReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1883,6 +2054,30 @@ export type TowShop$mechanicArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * TowShop.providerReviews
+ */
+export type TowShop$providerReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderReview
+   */
+  select?: Prisma.ProviderReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderReview
+   */
+  omit?: Prisma.ProviderReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderReviewInclude<ExtArgs> | null
+  where?: Prisma.ProviderReviewWhereInput
+  orderBy?: Prisma.ProviderReviewOrderByWithRelationInput | Prisma.ProviderReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderReviewScalarFieldEnum | Prisma.ProviderReviewScalarFieldEnum[]
 }
 
 /**

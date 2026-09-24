@@ -29,6 +29,7 @@ const menuItems: MenuItem[] = [
   { label: 'Requests History', route: '/request', icon: 'list', role: 'tower' },
   { label: 'Transactions', route: '/transaction-history', icon: 'creditCard', role: 'tower' },
   { label: 'Request Tow', route: '/tow-request', icon: 'car', usesTowImage: true, role: 'driver' },
+  { label: 'Fuel Stations', route: '/fuel-stations', icon: 'fuel', role: 'driver' },
   { label: 'Emergency Assistance', route: '/emergency', icon: 'alert', role: 'driver' },
   { label: 'Requests History', route: '/request', icon: 'list', role: 'driver' },
   { label: 'Payment', route: '/payment', icon: 'creditCard', role: 'driver' },
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     width: '70%',
     maxWidth: 280,
     backgroundColor: '#fff',
-    paddingTop: 50,
+    paddingTop: 28,
     paddingHorizontal: 20,
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 0 },
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
   profileSection: {
     alignItems: 'center',
     marginBottom: 30,
-    paddingTop: 20,
+    paddingTop: 8,
   },
   profileCircle: {
     width: 80,

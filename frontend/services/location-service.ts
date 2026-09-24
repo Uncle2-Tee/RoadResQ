@@ -11,6 +11,8 @@ export interface ShopLocation {
   phone: string;
   image?: string;
   distance?: number;
+  rating?: number;
+  reviews?: number;
   providerType: 'registered' | 'unregistered' | string;
   location?: string;
   city?: string;
@@ -214,6 +216,7 @@ const mapDatabaseShopToLocation = (shop: MechanicShopItem): ShopLocation => ({
   specialization: shop.specialization,
   licenseNumber: shop.licenseNumber,
   status: shop.status,
+  rating: shop.rating,
 });
 
 const getShopIdentity = (shop: ShopLocation) => shop.licenseNumber || shop.id;

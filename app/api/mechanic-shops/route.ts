@@ -31,6 +31,8 @@ const toShopResponse = (shop: ShopRecord, providerType: 'registered' | 'tow') =>
   updatedAt: shop.updatedAt.toISOString(),
 });
 
+const toProviderType = (value: 'registered' | 'tow') => (value === 'tow' ? 'TOW' : 'MECHANIC');
+
 const removedShopNames = new Set([
   'elliot auto',
   'elliot autos',
@@ -88,6 +90,7 @@ const toFiniteNumber = (value: unknown) => {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const driverId = request.headers.get('x-user-id')?.trim();
     const providerType = String(searchParams.get('providerType') || '').trim().toLowerCase();
     if (providerType !== '' && providerType !== 'registered' && providerType !== 'tow') {
       return jsonError('providerType must be registered or tow', 400);
@@ -113,10 +116,21 @@ export async function GET(request: Request) {
       'Mechanic shop database query timed out'
     );
 
+    const providerTypeValue = toProviderType(isTow ? 'tow' : 'registered');
+    const providerIds = shops.map((shop) => shop.shopId);
+    const reviews = driverId && providerIds.length > 0
+      ? await prisma.providerReview.findMany({
+          where: { driverId, providerType: providerTypeValue, providerId: { in: providerIds } },
+          select: { providerId: true, rating: true },
+        })
+      : [];
+    const reviewByProviderId = new Map(reviews.map((review) => [review.providerId, review.rating]));
+
     return Response.json({
-      shops: shops.filter((shop) => !isRemovedShopName(shop.shopName)).map((shop) =>
-        toShopResponse(shop, isTow ? 'tow' : 'registered')
-      ),
+      shops: shops.filter((shop) => !isRemovedShopName(shop.shopName)).map((shop) => ({
+        ...toShopResponse(shop, isTow ? 'tow' : 'registered'),
+        rating: reviewByProviderId.get(shop.shopId) ?? null,
+      })),
     });
   } catch (error) {
     console.error('[mechanic-shops] list failed:', error);

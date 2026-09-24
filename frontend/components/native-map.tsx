@@ -1,5 +1,5 @@
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Polyline } from 'react-native-maps';
 
 export type NativeMapView = MapView;
-export { Marker };
+export { Marker, Polyline };
 export default MapView;

@@ -290,12 +290,18 @@ export default function DashboardScreen() {
           const latitude = liveLocation.coords.latitude;
           const longitude = liveLocation.coords.longitude;
           hasUsableLocation = true;
+          setErrorMsg(null);
           applyMapLocation(latitude, longitude);
           updateDriverLocationName(latitude, longitude, { force: true }).catch(() => {});
           updateNearbyMechanics(latitude, longitude, setNearbyMechanics).catch(() => {});
           updateNearbyMechanics(latitude, longitude, setNearbyMechanics, { forceRefresh: true }).catch(() => {});
         } else if (!hasUsableLocation) {
-          setErrorMsg('Location services are taking longer than expected. Showing cached shops if available.');
+          const savedLocation = await getCachedDriverLocation();
+          if (savedLocation) {
+            applyMapLocation(savedLocation.latitude, savedLocation.longitude);
+            updateDriverLocationName(savedLocation.latitude, savedLocation.longitude, { force: true }).catch(() => {});
+            updateNearbyMechanics(savedLocation.latitude, savedLocation.longitude, setNearbyMechanics).catch(() => {});
+          }
           setLoading(false);
           await loadCachedShops();
         }

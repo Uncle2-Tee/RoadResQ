@@ -76,3 +76,18 @@ export type TowShop = Prisma.TowShopModel
  * 
  */
 export type Payment = Prisma.PaymentModel
+/**
+ * Model ProviderReview
+ * 
+ */
+export type ProviderReview = Prisma.ProviderReviewModel
+/**
+ * Model DriverLocationTrack
+ * 
+ */
+export type DriverLocationTrack = Prisma.DriverLocationTrackModel
+/**
+ * Model ProviderLocationTrack
+ * 
+ */
+export type ProviderLocationTrack = Prisma.ProviderLocationTrackModel

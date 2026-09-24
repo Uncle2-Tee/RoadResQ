@@ -127,6 +127,18 @@ Apply the Prisma schema to the configured database:
 npm run db:push
 ```
 
+For the repeatable migration workflow, use `db:migrate:dev` during development and
+`db:migrate:deploy` in deployment environments. Existing databases can be enrolled
+without data loss by running this once:
+
+```bash
+npm run db:migrate:baseline
+```
+
+The baseline command generates `prisma/migrations/0_baseline/migration.sql` from the
+current schema and marks it as applied. It does not run the generated create-table
+SQL against the existing database.
+
 For schema changes that need the direct database connection on Windows:
 
 ```powershell

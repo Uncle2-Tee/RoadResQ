@@ -390,7 +390,10 @@ export const ModelName = {
   RequestHistory: 'RequestHistory',
   MechanicShop: 'MechanicShop',
   TowShop: 'TowShop',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  ProviderReview: 'ProviderReview',
+  DriverLocationTrack: 'DriverLocationTrack',
+  ProviderLocationTrack: 'ProviderLocationTrack'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "pushToken" | "requestHistory" | "mechanicShop" | "towShop" | "payment"
+    modelProps: "user" | "passwordResetToken" | "pushToken" | "requestHistory" | "mechanicShop" | "towShop" | "payment" | "providerReview" | "driverLocationTrack" | "providerLocationTrack"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -928,6 +931,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ProviderReview: {
+      payload: Prisma.$ProviderReviewPayload<ExtArgs>
+      fields: Prisma.ProviderReviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProviderReviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProviderReviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>
+        }
+        findFirst: {
+          args: Prisma.ProviderReviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProviderReviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>
+        }
+        findMany: {
+          args: Prisma.ProviderReviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>[]
+        }
+        create: {
+          args: Prisma.ProviderReviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>
+        }
+        createMany: {
+          args: Prisma.ProviderReviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProviderReviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>[]
+        }
+        delete: {
+          args: Prisma.ProviderReviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>
+        }
+        update: {
+          args: Prisma.ProviderReviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProviderReviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProviderReviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProviderReviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProviderReviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderReviewPayload>
+        }
+        aggregate: {
+          args: Prisma.ProviderReviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProviderReview>
+        }
+        groupBy: {
+          args: Prisma.ProviderReviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderReviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProviderReviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderReviewCountAggregateOutputType> | number
+        }
+      }
+    }
+    DriverLocationTrack: {
+      payload: Prisma.$DriverLocationTrackPayload<ExtArgs>
+      fields: Prisma.DriverLocationTrackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DriverLocationTrackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DriverLocationTrackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>
+        }
+        findFirst: {
+          args: Prisma.DriverLocationTrackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DriverLocationTrackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>
+        }
+        findMany: {
+          args: Prisma.DriverLocationTrackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>[]
+        }
+        create: {
+          args: Prisma.DriverLocationTrackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>
+        }
+        createMany: {
+          args: Prisma.DriverLocationTrackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DriverLocationTrackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>[]
+        }
+        delete: {
+          args: Prisma.DriverLocationTrackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>
+        }
+        update: {
+          args: Prisma.DriverLocationTrackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>
+        }
+        deleteMany: {
+          args: Prisma.DriverLocationTrackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DriverLocationTrackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DriverLocationTrackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>[]
+        }
+        upsert: {
+          args: Prisma.DriverLocationTrackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DriverLocationTrackPayload>
+        }
+        aggregate: {
+          args: Prisma.DriverLocationTrackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDriverLocationTrack>
+        }
+        groupBy: {
+          args: Prisma.DriverLocationTrackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DriverLocationTrackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DriverLocationTrackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DriverLocationTrackCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProviderLocationTrack: {
+      payload: Prisma.$ProviderLocationTrackPayload<ExtArgs>
+      fields: Prisma.ProviderLocationTrackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProviderLocationTrackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProviderLocationTrackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>
+        }
+        findFirst: {
+          args: Prisma.ProviderLocationTrackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProviderLocationTrackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>
+        }
+        findMany: {
+          args: Prisma.ProviderLocationTrackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>[]
+        }
+        create: {
+          args: Prisma.ProviderLocationTrackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>
+        }
+        createMany: {
+          args: Prisma.ProviderLocationTrackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProviderLocationTrackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>[]
+        }
+        delete: {
+          args: Prisma.ProviderLocationTrackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>
+        }
+        update: {
+          args: Prisma.ProviderLocationTrackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProviderLocationTrackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProviderLocationTrackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProviderLocationTrackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProviderLocationTrackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderLocationTrackPayload>
+        }
+        aggregate: {
+          args: Prisma.ProviderLocationTrackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProviderLocationTrack>
+        }
+        groupBy: {
+          args: Prisma.ProviderLocationTrackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderLocationTrackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProviderLocationTrackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderLocationTrackCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1116,6 +1341,47 @@ export const PaymentScalarFieldEnum = {
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
+export const ProviderReviewScalarFieldEnum = {
+  id: 'id',
+  driverId: 'driverId',
+  providerType: 'providerType',
+  providerId: 'providerId',
+  mechanicShopId: 'mechanicShopId',
+  towShopId: 'towShopId',
+  rating: 'rating',
+  reviewText: 'reviewText',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProviderReviewScalarFieldEnum = (typeof ProviderReviewScalarFieldEnum)[keyof typeof ProviderReviewScalarFieldEnum]
+
+
+export const DriverLocationTrackScalarFieldEnum = {
+  id: 'id',
+  driverId: 'driverId',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  accuracy: 'accuracy',
+  source: 'source',
+  recordedAt: 'recordedAt'
+} as const
+
+export type DriverLocationTrackScalarFieldEnum = (typeof DriverLocationTrackScalarFieldEnum)[keyof typeof DriverLocationTrackScalarFieldEnum]
+
+
+export const ProviderLocationTrackScalarFieldEnum = {
+  id: 'id',
+  providerId: 'providerId',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  accuracy: 'accuracy',
+  recordedAt: 'recordedAt'
+} as const
+
+export type ProviderLocationTrackScalarFieldEnum = (typeof ProviderLocationTrackScalarFieldEnum)[keyof typeof ProviderLocationTrackScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1259,6 +1525,20 @@ export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'ProviderType'
+ */
+export type EnumProviderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderType'>
+    
+
+
+/**
+ * Reference to a field of type 'ProviderType[]'
+ */
+export type ListEnumProviderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderType[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1388,6 +1668,9 @@ export type GlobalOmitConfig = {
   mechanicShop?: Prisma.MechanicShopOmit
   towShop?: Prisma.TowShopOmit
   payment?: Prisma.PaymentOmit
+  providerReview?: Prisma.ProviderReviewOmit
+  driverLocationTrack?: Prisma.DriverLocationTrackOmit
+  providerLocationTrack?: Prisma.ProviderLocationTrackOmit
 }
 
 /* Types for Logging */

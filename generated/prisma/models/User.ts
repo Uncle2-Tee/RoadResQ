@@ -238,6 +238,9 @@ export type UserWhereInput = {
   driverRequests?: Prisma.RequestHistoryListRelationFilter
   mechanicRequests?: Prisma.RequestHistoryListRelationFilter
   towShops?: Prisma.TowShopListRelationFilter
+  driverReviews?: Prisma.ProviderReviewListRelationFilter
+  driverLocationTracks?: Prisma.DriverLocationTrackListRelationFilter
+  providerLocationTracks?: Prisma.ProviderLocationTrackListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -260,6 +263,9 @@ export type UserOrderByWithRelationInput = {
   driverRequests?: Prisma.RequestHistoryOrderByRelationAggregateInput
   mechanicRequests?: Prisma.RequestHistoryOrderByRelationAggregateInput
   towShops?: Prisma.TowShopOrderByRelationAggregateInput
+  driverReviews?: Prisma.ProviderReviewOrderByRelationAggregateInput
+  driverLocationTracks?: Prisma.DriverLocationTrackOrderByRelationAggregateInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -285,6 +291,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   driverRequests?: Prisma.RequestHistoryListRelationFilter
   mechanicRequests?: Prisma.RequestHistoryListRelationFilter
   towShops?: Prisma.TowShopListRelationFilter
+  driverReviews?: Prisma.ProviderReviewListRelationFilter
+  driverLocationTracks?: Prisma.DriverLocationTrackListRelationFilter
+  providerLocationTracks?: Prisma.ProviderLocationTrackListRelationFilter
 }, "id" | "email" | "activeSessionId">
 
 export type UserOrderByWithAggregationInput = {
@@ -341,6 +350,9 @@ export type UserCreateInput = {
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -363,6 +375,9 @@ export type UserUncheckedCreateInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserUpdateInput = {
@@ -385,6 +400,9 @@ export type UserUpdateInput = {
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -407,6 +425,9 @@ export type UserUncheckedUpdateInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -643,6 +664,48 @@ export type UserUpdateOneWithoutMechanicPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMechanicPaymentsInput, Prisma.UserUpdateWithoutMechanicPaymentsInput>, Prisma.UserUncheckedUpdateWithoutMechanicPaymentsInput>
 }
 
+export type UserCreateNestedOneWithoutDriverReviewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDriverReviewsInput, Prisma.UserUncheckedCreateWithoutDriverReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDriverReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDriverReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDriverReviewsInput, Prisma.UserUncheckedCreateWithoutDriverReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDriverReviewsInput
+  upsert?: Prisma.UserUpsertWithoutDriverReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDriverReviewsInput, Prisma.UserUpdateWithoutDriverReviewsInput>, Prisma.UserUncheckedUpdateWithoutDriverReviewsInput>
+}
+
+export type UserCreateNestedOneWithoutDriverLocationTracksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDriverLocationTracksInput, Prisma.UserUncheckedCreateWithoutDriverLocationTracksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDriverLocationTracksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDriverLocationTracksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDriverLocationTracksInput, Prisma.UserUncheckedCreateWithoutDriverLocationTracksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDriverLocationTracksInput
+  upsert?: Prisma.UserUpsertWithoutDriverLocationTracksInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDriverLocationTracksInput, Prisma.UserUpdateWithoutDriverLocationTracksInput>, Prisma.UserUncheckedUpdateWithoutDriverLocationTracksInput>
+}
+
+export type UserCreateNestedOneWithoutProviderLocationTracksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProviderLocationTracksInput, Prisma.UserUncheckedCreateWithoutProviderLocationTracksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProviderLocationTracksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutProviderLocationTracksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProviderLocationTracksInput, Prisma.UserUncheckedCreateWithoutProviderLocationTracksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProviderLocationTracksInput
+  upsert?: Prisma.UserUpsertWithoutProviderLocationTracksInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProviderLocationTracksInput, Prisma.UserUpdateWithoutProviderLocationTracksInput>, Prisma.UserUncheckedUpdateWithoutProviderLocationTracksInput>
+}
+
 export type UserCreateWithoutPasswordResetTokensInput = {
   id?: string
   name: string
@@ -662,6 +725,9 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -683,6 +749,9 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -720,6 +789,9 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -741,6 +813,9 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserCreateWithoutPushTokensInput = {
@@ -762,6 +837,9 @@ export type UserCreateWithoutPushTokensInput = {
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutPushTokensInput = {
@@ -783,6 +861,9 @@ export type UserUncheckedCreateWithoutPushTokensInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutPushTokensInput = {
@@ -820,6 +901,9 @@ export type UserUpdateWithoutPushTokensInput = {
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPushTokensInput = {
@@ -841,6 +925,9 @@ export type UserUncheckedUpdateWithoutPushTokensInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserCreateWithoutDriverRequestsInput = {
@@ -862,6 +949,9 @@ export type UserCreateWithoutDriverRequestsInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutDriverRequestsInput = {
@@ -883,6 +973,9 @@ export type UserUncheckedCreateWithoutDriverRequestsInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutDriverRequestsInput = {
@@ -909,6 +1002,9 @@ export type UserCreateWithoutMechanicRequestsInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutMechanicRequestsInput = {
@@ -930,6 +1026,9 @@ export type UserUncheckedCreateWithoutMechanicRequestsInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutMechanicRequestsInput = {
@@ -967,6 +1066,9 @@ export type UserUpdateWithoutDriverRequestsInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDriverRequestsInput = {
@@ -988,6 +1090,9 @@ export type UserUncheckedUpdateWithoutDriverRequestsInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUpsertWithoutMechanicRequestsInput = {
@@ -1020,6 +1125,9 @@ export type UserUpdateWithoutMechanicRequestsInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMechanicRequestsInput = {
@@ -1041,6 +1149,9 @@ export type UserUncheckedUpdateWithoutMechanicRequestsInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserCreateWithoutMechanicShopsInput = {
@@ -1062,6 +1173,9 @@ export type UserCreateWithoutMechanicShopsInput = {
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutMechanicShopsInput = {
@@ -1083,6 +1197,9 @@ export type UserUncheckedCreateWithoutMechanicShopsInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutMechanicShopsInput = {
@@ -1120,6 +1237,9 @@ export type UserUpdateWithoutMechanicShopsInput = {
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMechanicShopsInput = {
@@ -1141,6 +1261,9 @@ export type UserUncheckedUpdateWithoutMechanicShopsInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserCreateWithoutTowShopsInput = {
@@ -1162,6 +1285,9 @@ export type UserCreateWithoutTowShopsInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutTowShopsInput = {
@@ -1183,6 +1309,9 @@ export type UserUncheckedCreateWithoutTowShopsInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutTowShopsInput = {
@@ -1220,6 +1349,9 @@ export type UserUpdateWithoutTowShopsInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTowShopsInput = {
@@ -1241,6 +1373,9 @@ export type UserUncheckedUpdateWithoutTowShopsInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserCreateWithoutDriverPaymentsInput = {
@@ -1262,6 +1397,9 @@ export type UserCreateWithoutDriverPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutDriverPaymentsInput = {
@@ -1283,6 +1421,9 @@ export type UserUncheckedCreateWithoutDriverPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutDriverPaymentsInput = {
@@ -1309,6 +1450,9 @@ export type UserCreateWithoutMechanicPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
 }
 
 export type UserUncheckedCreateWithoutMechanicPaymentsInput = {
@@ -1330,6 +1474,9 @@ export type UserUncheckedCreateWithoutMechanicPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
   towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type UserCreateOrConnectWithoutMechanicPaymentsInput = {
@@ -1367,6 +1514,9 @@ export type UserUpdateWithoutDriverPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDriverPaymentsInput = {
@@ -1388,6 +1538,9 @@ export type UserUncheckedUpdateWithoutDriverPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUpsertWithoutMechanicPaymentsInput = {
@@ -1420,6 +1573,9 @@ export type UserUpdateWithoutMechanicPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMechanicPaymentsInput = {
@@ -1441,6 +1597,345 @@ export type UserUncheckedUpdateWithoutMechanicPaymentsInput = {
   driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
   mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
   towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
+}
+
+export type UserCreateWithoutDriverReviewsInput = {
+  id?: string
+  name: string
+  email: string
+  phoneNumber: string
+  role: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profilePhotoUri?: string | null
+  activeSessionId?: string | null
+  activeSessionStartedAt?: Date | string | null
+  mechanicShops?: Prisma.MechanicShopCreateNestedManyWithoutMechanicInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  driverPayments?: Prisma.PaymentCreateNestedManyWithoutDriverInput
+  mechanicPayments?: Prisma.PaymentCreateNestedManyWithoutMechanicInput
+  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
+  driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
+  mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
+  towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
+}
+
+export type UserUncheckedCreateWithoutDriverReviewsInput = {
+  id?: string
+  name: string
+  email: string
+  phoneNumber: string
+  role: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profilePhotoUri?: string | null
+  activeSessionId?: string | null
+  activeSessionStartedAt?: Date | string | null
+  mechanicShops?: Prisma.MechanicShopUncheckedCreateNestedManyWithoutMechanicInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  driverPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutDriverInput
+  mechanicPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMechanicInput
+  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
+  driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
+  mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
+  towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
+}
+
+export type UserCreateOrConnectWithoutDriverReviewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDriverReviewsInput, Prisma.UserUncheckedCreateWithoutDriverReviewsInput>
+}
+
+export type UserUpsertWithoutDriverReviewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDriverReviewsInput, Prisma.UserUncheckedUpdateWithoutDriverReviewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDriverReviewsInput, Prisma.UserUncheckedCreateWithoutDriverReviewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDriverReviewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDriverReviewsInput, Prisma.UserUncheckedUpdateWithoutDriverReviewsInput>
+}
+
+export type UserUpdateWithoutDriverReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profilePhotoUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mechanicShops?: Prisma.MechanicShopUpdateManyWithoutMechanicNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  driverPayments?: Prisma.PaymentUpdateManyWithoutDriverNestedInput
+  mechanicPayments?: Prisma.PaymentUpdateManyWithoutMechanicNestedInput
+  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
+  driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
+  mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
+  towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDriverReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profilePhotoUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mechanicShops?: Prisma.MechanicShopUncheckedUpdateManyWithoutMechanicNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  driverPayments?: Prisma.PaymentUncheckedUpdateManyWithoutDriverNestedInput
+  mechanicPayments?: Prisma.PaymentUncheckedUpdateManyWithoutMechanicNestedInput
+  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
+  driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
+  mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
+  towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
+}
+
+export type UserCreateWithoutDriverLocationTracksInput = {
+  id?: string
+  name: string
+  email: string
+  phoneNumber: string
+  role: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profilePhotoUri?: string | null
+  activeSessionId?: string | null
+  activeSessionStartedAt?: Date | string | null
+  mechanicShops?: Prisma.MechanicShopCreateNestedManyWithoutMechanicInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  driverPayments?: Prisma.PaymentCreateNestedManyWithoutDriverInput
+  mechanicPayments?: Prisma.PaymentCreateNestedManyWithoutMechanicInput
+  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
+  driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
+  mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
+  towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackCreateNestedManyWithoutProviderInput
+}
+
+export type UserUncheckedCreateWithoutDriverLocationTracksInput = {
+  id?: string
+  name: string
+  email: string
+  phoneNumber: string
+  role: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profilePhotoUri?: string | null
+  activeSessionId?: string | null
+  activeSessionStartedAt?: Date | string | null
+  mechanicShops?: Prisma.MechanicShopUncheckedCreateNestedManyWithoutMechanicInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  driverPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutDriverInput
+  mechanicPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMechanicInput
+  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
+  driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
+  mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
+  towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedCreateNestedManyWithoutProviderInput
+}
+
+export type UserCreateOrConnectWithoutDriverLocationTracksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDriverLocationTracksInput, Prisma.UserUncheckedCreateWithoutDriverLocationTracksInput>
+}
+
+export type UserUpsertWithoutDriverLocationTracksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDriverLocationTracksInput, Prisma.UserUncheckedUpdateWithoutDriverLocationTracksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDriverLocationTracksInput, Prisma.UserUncheckedCreateWithoutDriverLocationTracksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDriverLocationTracksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDriverLocationTracksInput, Prisma.UserUncheckedUpdateWithoutDriverLocationTracksInput>
+}
+
+export type UserUpdateWithoutDriverLocationTracksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profilePhotoUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mechanicShops?: Prisma.MechanicShopUpdateManyWithoutMechanicNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  driverPayments?: Prisma.PaymentUpdateManyWithoutDriverNestedInput
+  mechanicPayments?: Prisma.PaymentUpdateManyWithoutMechanicNestedInput
+  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
+  driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
+  mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
+  towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUpdateManyWithoutProviderNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDriverLocationTracksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profilePhotoUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mechanicShops?: Prisma.MechanicShopUncheckedUpdateManyWithoutMechanicNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  driverPayments?: Prisma.PaymentUncheckedUpdateManyWithoutDriverNestedInput
+  mechanicPayments?: Prisma.PaymentUncheckedUpdateManyWithoutMechanicNestedInput
+  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
+  driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
+  mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
+  towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  providerLocationTracks?: Prisma.ProviderLocationTrackUncheckedUpdateManyWithoutProviderNestedInput
+}
+
+export type UserCreateWithoutProviderLocationTracksInput = {
+  id?: string
+  name: string
+  email: string
+  phoneNumber: string
+  role: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profilePhotoUri?: string | null
+  activeSessionId?: string | null
+  activeSessionStartedAt?: Date | string | null
+  mechanicShops?: Prisma.MechanicShopCreateNestedManyWithoutMechanicInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  driverPayments?: Prisma.PaymentCreateNestedManyWithoutDriverInput
+  mechanicPayments?: Prisma.PaymentCreateNestedManyWithoutMechanicInput
+  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
+  driverRequests?: Prisma.RequestHistoryCreateNestedManyWithoutDriverInput
+  mechanicRequests?: Prisma.RequestHistoryCreateNestedManyWithoutMechanicInput
+  towShops?: Prisma.TowShopCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackCreateNestedManyWithoutDriverInput
+}
+
+export type UserUncheckedCreateWithoutProviderLocationTracksInput = {
+  id?: string
+  name: string
+  email: string
+  phoneNumber: string
+  role: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profilePhotoUri?: string | null
+  activeSessionId?: string | null
+  activeSessionStartedAt?: Date | string | null
+  mechanicShops?: Prisma.MechanicShopUncheckedCreateNestedManyWithoutMechanicInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  driverPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutDriverInput
+  mechanicPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMechanicInput
+  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
+  driverRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutDriverInput
+  mechanicRequests?: Prisma.RequestHistoryUncheckedCreateNestedManyWithoutMechanicInput
+  towShops?: Prisma.TowShopUncheckedCreateNestedManyWithoutMechanicInput
+  driverReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutDriverInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedCreateNestedManyWithoutDriverInput
+}
+
+export type UserCreateOrConnectWithoutProviderLocationTracksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProviderLocationTracksInput, Prisma.UserUncheckedCreateWithoutProviderLocationTracksInput>
+}
+
+export type UserUpsertWithoutProviderLocationTracksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProviderLocationTracksInput, Prisma.UserUncheckedUpdateWithoutProviderLocationTracksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProviderLocationTracksInput, Prisma.UserUncheckedCreateWithoutProviderLocationTracksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProviderLocationTracksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProviderLocationTracksInput, Prisma.UserUncheckedUpdateWithoutProviderLocationTracksInput>
+}
+
+export type UserUpdateWithoutProviderLocationTracksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profilePhotoUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mechanicShops?: Prisma.MechanicShopUpdateManyWithoutMechanicNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  driverPayments?: Prisma.PaymentUpdateManyWithoutDriverNestedInput
+  mechanicPayments?: Prisma.PaymentUpdateManyWithoutMechanicNestedInput
+  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
+  driverRequests?: Prisma.RequestHistoryUpdateManyWithoutDriverNestedInput
+  mechanicRequests?: Prisma.RequestHistoryUpdateManyWithoutMechanicNestedInput
+  towShops?: Prisma.TowShopUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUpdateManyWithoutDriverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProviderLocationTracksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profilePhotoUri?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeSessionStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mechanicShops?: Prisma.MechanicShopUncheckedUpdateManyWithoutMechanicNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  driverPayments?: Prisma.PaymentUncheckedUpdateManyWithoutDriverNestedInput
+  mechanicPayments?: Prisma.PaymentUncheckedUpdateManyWithoutMechanicNestedInput
+  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
+  driverRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutDriverNestedInput
+  mechanicRequests?: Prisma.RequestHistoryUncheckedUpdateManyWithoutMechanicNestedInput
+  towShops?: Prisma.TowShopUncheckedUpdateManyWithoutMechanicNestedInput
+  driverReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutDriverNestedInput
+  driverLocationTracks?: Prisma.DriverLocationTrackUncheckedUpdateManyWithoutDriverNestedInput
 }
 
 
@@ -1457,6 +1952,9 @@ export type UserCountOutputType = {
   driverRequests: number
   mechanicRequests: number
   towShops: number
+  driverReviews: number
+  driverLocationTracks: number
+  providerLocationTracks: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1468,6 +1966,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   driverRequests?: boolean | UserCountOutputTypeCountDriverRequestsArgs
   mechanicRequests?: boolean | UserCountOutputTypeCountMechanicRequestsArgs
   towShops?: boolean | UserCountOutputTypeCountTowShopsArgs
+  driverReviews?: boolean | UserCountOutputTypeCountDriverReviewsArgs
+  driverLocationTracks?: boolean | UserCountOutputTypeCountDriverLocationTracksArgs
+  providerLocationTracks?: boolean | UserCountOutputTypeCountProviderLocationTracksArgs
 }
 
 /**
@@ -1536,6 +2037,27 @@ export type UserCountOutputTypeCountTowShopsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.TowShopWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDriverReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderReviewWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDriverLocationTracksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DriverLocationTrackWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProviderLocationTracksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderLocationTrackWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1557,6 +2079,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   driverRequests?: boolean | Prisma.User$driverRequestsArgs<ExtArgs>
   mechanicRequests?: boolean | Prisma.User$mechanicRequestsArgs<ExtArgs>
   towShops?: boolean | Prisma.User$towShopsArgs<ExtArgs>
+  driverReviews?: boolean | Prisma.User$driverReviewsArgs<ExtArgs>
+  driverLocationTracks?: boolean | Prisma.User$driverLocationTracksArgs<ExtArgs>
+  providerLocationTracks?: boolean | Prisma.User$providerLocationTracksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1612,6 +2137,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   driverRequests?: boolean | Prisma.User$driverRequestsArgs<ExtArgs>
   mechanicRequests?: boolean | Prisma.User$mechanicRequestsArgs<ExtArgs>
   towShops?: boolean | Prisma.User$towShopsArgs<ExtArgs>
+  driverReviews?: boolean | Prisma.User$driverReviewsArgs<ExtArgs>
+  driverLocationTracks?: boolean | Prisma.User$driverLocationTracksArgs<ExtArgs>
+  providerLocationTracks?: boolean | Prisma.User$providerLocationTracksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1628,6 +2156,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     driverRequests: Prisma.$RequestHistoryPayload<ExtArgs>[]
     mechanicRequests: Prisma.$RequestHistoryPayload<ExtArgs>[]
     towShops: Prisma.$TowShopPayload<ExtArgs>[]
+    driverReviews: Prisma.$ProviderReviewPayload<ExtArgs>[]
+    driverLocationTracks: Prisma.$DriverLocationTrackPayload<ExtArgs>[]
+    providerLocationTracks: Prisma.$ProviderLocationTrackPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2043,6 +2574,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   driverRequests<T extends Prisma.User$driverRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$driverRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mechanicRequests<T extends Prisma.User$mechanicRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mechanicRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   towShops<T extends Prisma.User$towShopsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$towShopsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TowShopPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  driverReviews<T extends Prisma.User$driverReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$driverReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  driverLocationTracks<T extends Prisma.User$driverLocationTracksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$driverLocationTracksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DriverLocationTrackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  providerLocationTracks<T extends Prisma.User$providerLocationTracksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$providerLocationTracksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderLocationTrackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2665,6 +3199,78 @@ export type User$towShopsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.TowShopScalarFieldEnum | Prisma.TowShopScalarFieldEnum[]
+}
+
+/**
+ * User.driverReviews
+ */
+export type User$driverReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderReview
+   */
+  select?: Prisma.ProviderReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderReview
+   */
+  omit?: Prisma.ProviderReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderReviewInclude<ExtArgs> | null
+  where?: Prisma.ProviderReviewWhereInput
+  orderBy?: Prisma.ProviderReviewOrderByWithRelationInput | Prisma.ProviderReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderReviewScalarFieldEnum | Prisma.ProviderReviewScalarFieldEnum[]
+}
+
+/**
+ * User.driverLocationTracks
+ */
+export type User$driverLocationTracksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DriverLocationTrack
+   */
+  select?: Prisma.DriverLocationTrackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DriverLocationTrack
+   */
+  omit?: Prisma.DriverLocationTrackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DriverLocationTrackInclude<ExtArgs> | null
+  where?: Prisma.DriverLocationTrackWhereInput
+  orderBy?: Prisma.DriverLocationTrackOrderByWithRelationInput | Prisma.DriverLocationTrackOrderByWithRelationInput[]
+  cursor?: Prisma.DriverLocationTrackWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DriverLocationTrackScalarFieldEnum | Prisma.DriverLocationTrackScalarFieldEnum[]
+}
+
+/**
+ * User.providerLocationTracks
+ */
+export type User$providerLocationTracksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderLocationTrack
+   */
+  select?: Prisma.ProviderLocationTrackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderLocationTrack
+   */
+  omit?: Prisma.ProviderLocationTrackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderLocationTrackInclude<ExtArgs> | null
+  where?: Prisma.ProviderLocationTrackWhereInput
+  orderBy?: Prisma.ProviderLocationTrackOrderByWithRelationInput | Prisma.ProviderLocationTrackOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderLocationTrackWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderLocationTrackScalarFieldEnum | Prisma.ProviderLocationTrackScalarFieldEnum[]
 }
 
 /**

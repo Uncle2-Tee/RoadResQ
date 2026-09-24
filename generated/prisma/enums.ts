@@ -55,3 +55,11 @@ export const PaymentStatus = {
 } as const
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const ProviderType = {
+  MECHANIC: 'MECHANIC',
+  TOW: 'TOW'
+} as const
+
+export type ProviderType = (typeof ProviderType)[keyof typeof ProviderType]

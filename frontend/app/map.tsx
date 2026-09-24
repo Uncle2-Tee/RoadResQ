@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, Linking, Platform, StyleSheet, View } from 'react-native';
 
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -18,10 +18,12 @@ import { ThemedView } from '../components/themed-view';
 // Then rebuild the app if using a native build (expo run:android / expo run:ios).
 
 import * as Location from 'expo-location';
-import MapView, { Marker, type NativeMapView } from '../components/native-map';
+import MapView, { Marker, Polyline, type NativeMapView } from '../components/native-map';
 import { getCachedDriverLocation, saveDriverLocation } from '../services/driver-location-cache';
+import { getProviderLocations, saveDriverLocationToApi, saveProviderRating, type ProviderLocation } from '../services/api-client';
 import { fetchNearbyShops, ShopLocation } from '../services/location-service';
 import { getLocationName } from '../services/location-label';
+import { calculateDistanceKm, getProviderDistanceText, isProviderAtDriverLocation } from '../services/location-geofence';
 import { recordMechanicContactRequest } from '../services/request-history-recorder';
 
 interface Region {
@@ -68,8 +70,22 @@ export default function MapScreen() {
   const [driverLocationName, setDriverLocationName] = useState('Finding your exact location...');
   const [loading, setLoading] = useState(true);
   const [isTracking, setIsTracking] = useState(false);
+  const [arrivalStatus, setArrivalStatus] = useState<Record<string, { arrived: boolean; distanceKm: number; statusText: string }>>({});
+  const [driverRatings, setDriverRatings] = useState<Record<string, number>>({});
+  const [providerLocations, setProviderLocations] = useState<Record<string, ProviderLocation>>({});
+  const lastLocationSyncAtRef = useRef(0);
   const driverName = (params.driverName as string) || 'Driver';
   const locationWatcherRef = useRef<any>(null);
+
+  const syncDriverLocation = useCallback((latitude: number, longitude: number, accuracy?: number | null) => {
+    const now = Date.now();
+    if (now - lastLocationSyncAtRef.current < 15000) {
+      return;
+    }
+
+    lastLocationSyncAtRef.current = now;
+    saveDriverLocationToApi({ latitude, longitude, accuracy }).catch(() => {});
+  }, []);
 
   // Set loading timeout - if data doesn't load within 2 seconds, show partial UI
   useEffect(() => {
@@ -85,11 +101,50 @@ export default function MapScreen() {
     return [...mechanics].sort((a, b) => (a.distance || 0) - (b.distance || 0));
   };
 
+  const getMechanicKey = (mechanic: Mechanic) => mechanic.mechanicId || mechanic.id;
+
+  const withSavedRatings = useCallback((mechanics: Mechanic[]) => {
+    return mechanics.map((mechanic) => {
+      const mechanicKey = getMechanicKey(mechanic);
+      const savedRating = mechanicKey ? driverRatings[mechanicKey] : undefined;
+      const baseRating = typeof mechanic.rating === 'number' ? mechanic.rating : 4.7;
+      const baseReviews = typeof mechanic.reviews === 'number' ? mechanic.reviews : 124;
+
+      return {
+        ...mechanic,
+        rating: savedRating ?? baseRating,
+        reviews: savedRating ? baseReviews + 1 : baseReviews,
+      };
+    });
+  }, [driverRatings]);
+
   // Update filtered mechanics when mechanics change
   useEffect(() => {
-    const filtered = filterMechanics(nearbyMechanics);
+    const filtered = filterMechanics(withSavedRatings(nearbyMechanics));
     setFilteredMechanics(filtered);
-  }, [nearbyMechanics]);
+  }, [nearbyMechanics, filterMechanics, withSavedRatings]);
+
+  useEffect(() => {
+    AsyncStorage.getItem('driverMechanicRatings')
+      .then((storedRatings) => {
+        if (!storedRatings) {
+          return;
+        }
+
+        try {
+          setDriverRatings(JSON.parse(storedRatings));
+        } catch (error) {
+          console.warn('Unable to read saved mechanic ratings:', error);
+        }
+      })
+      .catch((error) => {
+        console.warn('Unable to read saved mechanic ratings:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem('driverMechanicRatings', JSON.stringify(driverRatings)).catch(() => {});
+  }, [driverRatings]);
 
   useEffect(() => {
     if (!driverLocation) {
@@ -107,6 +162,58 @@ export default function MapScreen() {
       isActive = false;
     };
   }, [driverLocation]);
+
+  useEffect(() => {
+    if (!driverLocation || nearbyMechanics.length === 0) {
+      return;
+    }
+
+    const nextStatus: Record<string, { arrived: boolean; distanceKm: number; statusText: string }> = {};
+
+    for (const mechanic of nearbyMechanics) {
+      const distanceKm = calculateDistanceKm(
+        driverLocation.latitude,
+        driverLocation.longitude,
+        mechanic.latitude,
+        mechanic.longitude
+      );
+      const arrived = isProviderAtDriverLocation(distanceKm);
+      const statusText = getProviderDistanceText(distanceKm, mechanic.providerType === 'tow' ? 'Tower' : 'Mechanic');
+
+      nextStatus[mechanic.id] = { arrived, distanceKm, statusText };
+    }
+
+    setArrivalStatus(nextStatus);
+  }, [driverLocation, nearbyMechanics]);
+
+  useEffect(() => {
+    const providerIds = nearbyMechanics
+      .map((mechanic) => mechanic.mechanicId || mechanic.id)
+      .filter(Boolean);
+    if (providerIds.length === 0) {
+      setProviderLocations({});
+      return;
+    }
+
+    let active = true;
+    const loadProviderLocations = async () => {
+      try {
+        const locations = await getProviderLocations(Array.from(new Set(providerIds)));
+        if (active) {
+          setProviderLocations(Object.fromEntries(locations.map((location) => [location.providerId, location])));
+        }
+      } catch (error) {
+        console.warn('Unable to load live provider locations:', error);
+      }
+    };
+
+    loadProviderLocations();
+    const intervalId = setInterval(loadProviderLocations, 5000);
+    return () => {
+      active = false;
+      clearInterval(intervalId);
+    };
+  }, [nearbyMechanics]);
 
   // Show the nearest shops only and separate registered vs unregistered for rendering
   const VISIBLE_SHOPS = 3;
@@ -135,6 +242,7 @@ export default function MapScreen() {
 
           setDriverLocation({ latitude, longitude });
           saveDriverLocation(latitude, longitude).catch(() => {});
+          syncDriverLocation(latitude, longitude);
           setRegion({
             latitude,
             longitude,
@@ -173,6 +281,7 @@ export default function MapScreen() {
         if (liveLocation) {
           const latitude = liveLocation.coords.latitude;
           const longitude = liveLocation.coords.longitude;
+          setErrorMsg(null);
           hasUsableLocation = true;
           applyMapLocation(latitude, longitude);
 
@@ -180,9 +289,12 @@ export default function MapScreen() {
           updateNearbyMechanics(latitude, longitude, setNearbyMechanics).catch(() => {});
           updateNearbyMechanics(latitude, longitude, setNearbyMechanics, { forceRefresh: true }).catch(() => {});
         } else if (!hasUsableLocation) {
-          setErrorMsg('Location services are taking longer than expected. Please try refreshing.');
+          const savedLocation = await getCachedDriverLocation();
+          if (savedLocation) {
+            applyMapLocation(savedLocation.latitude, savedLocation.longitude);
+            updateNearbyMechanics(savedLocation.latitude, savedLocation.longitude, setNearbyMechanics).catch(() => {});
+          }
           setLoading(false);
-          return;
         }
 
         const trackingSeed = liveLocation || (
@@ -219,6 +331,7 @@ export default function MapScreen() {
 
             setDriverLocation({ latitude: newLat, longitude: newLon });
             saveDriverLocation(newLat, newLon).catch(() => {});
+            syncDriverLocation(newLat, newLon, location.coords.accuracy);
 
             setRegion({
               latitude: newLat,
@@ -303,6 +416,71 @@ export default function MapScreen() {
 
   const getMechanicLocationLabel = (mechanic: Mechanic) =>
     mechanic.location || mechanic.city || mechanic.region || 'Location not provided';
+
+  const getMechanicRatingData = (mechanic: Mechanic) => {
+    const mechanicKey = getMechanicKey(mechanic);
+    const baseRating = typeof mechanic.rating === 'number' ? mechanic.rating : 4.7;
+    const baseReviews = typeof mechanic.reviews === 'number' ? mechanic.reviews : 124;
+    const userRating = mechanicKey ? driverRatings[mechanicKey] : undefined;
+    const displayRating = userRating ?? baseRating;
+    const reviewCount = userRating ? baseReviews + 1 : baseReviews;
+
+    return {
+      displayRating,
+      reviewCount,
+      userRating: userRating ?? 0,
+    };
+  };
+
+  const getMechanicDistanceLabel = (mechanic: Mechanic): string => {
+    if (!driverLocation) {
+      return `${mechanic.name} is being tracked.`;
+    }
+
+    const distanceKm = calculateDistanceKm(
+      driverLocation.latitude,
+      driverLocation.longitude,
+      mechanic.latitude,
+      mechanic.longitude
+    );
+    const arrived = isProviderAtDriverLocation(distanceKm);
+    const statusText = getProviderDistanceText(distanceKm, mechanic.providerType === 'tow' ? 'Tower' : 'Mechanic');
+
+    return arrived ? statusText : statusText;
+  };
+
+  const handleRateMechanic = (mechanic: Mechanic, value: number) => {
+    const mechanicKey = getMechanicKey(mechanic);
+    const existingRating = driverRatings[mechanicKey];
+
+    setDriverRatings((currentRatings) => ({
+      ...currentRatings,
+      [mechanicKey]: value,
+    }));
+
+    setNearbyMechanics((currentMechanics) =>
+      currentMechanics.map((item) => {
+        const itemKey = getMechanicKey(item);
+        if (itemKey !== mechanicKey) {
+          return item;
+        }
+
+        return {
+          ...item,
+          rating: value,
+          reviews: (item.reviews ?? 124) + (existingRating ? 0 : 1),
+        };
+      })
+    );
+
+    saveProviderRating({
+      providerId: mechanic.id,
+      providerType: mechanic.providerType === 'tow' ? 'TOW' : 'MECHANIC',
+      rating: value,
+    }).catch((error) => {
+      console.warn('Unable to save provider rating remotely:', error);
+    });
+  };
 
   const handleChat = async (mechanic: Mechanic) => {
     router.push({
@@ -465,6 +643,33 @@ export default function MapScreen() {
                     tracksViewChanges={false}
                   />
                 ))}
+
+                {displayedMechanics.map((mechanic) => {
+                  const providerId = mechanic.mechanicId || mechanic.id;
+                  const providerLocation = providerLocations[providerId];
+                  if (!providerLocation) return null;
+
+                  return (
+                    <Fragment key={`live-${providerId}`}>
+                      <Marker
+                        coordinate={{ latitude: providerLocation.latitude, longitude: providerLocation.longitude }}
+                        title={`${mechanic.name} live location`}
+                        description={`Coming to your location: ${calculateDistanceKm(providerLocation.latitude, providerLocation.longitude, driverLocation.latitude, driverLocation.longitude).toFixed(1)} km away`
+                        }
+                        pinColor={mechanic.providerType === 'tow' ? '#7C3AED' : '#16A34A'}
+                      />
+                      <Polyline
+                        coordinates={[
+                          { latitude: providerLocation.latitude, longitude: providerLocation.longitude },
+                          { latitude: driverLocation.latitude, longitude: driverLocation.longitude },
+                        ]}
+                        strokeColor={mechanic.providerType === 'tow' ? '#7C3AED' : '#16A34A'}
+                        strokeWidth={3}
+                        lineDashPattern={[8, 6]}
+                      />
+                    </Fragment>
+                  );
+                })}
               </MapView>
             )}
             {driverLocation && (
@@ -483,48 +688,84 @@ export default function MapScreen() {
             showsVerticalScrollIndicator={false}
             data={filteredMechanics}
             keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <View>
-                <View style={styles.shopItem}>
-                  <View style={styles.shopInfo}>
-                    <ThemedText style={styles.shopName}>{item.name}</ThemedText>
-                    <ThemedText style={styles.shopDistance}>
-                      {(item.distance || 0).toFixed(1)} km away
-                    </ThemedText>
+            renderItem={({ item, index }) => {
+              const ratingData = getMechanicRatingData(item);
+              const userRating = ratingData.userRating ?? 0;
+
+              return (
+                <View>
+                  <View style={styles.shopItem}>
+                    <View style={styles.shopInfo}>
+                      <ThemedText style={styles.shopName}>{item.name}</ThemedText>
+                      <ThemedText style={styles.shopDistance}>
+                        {getMechanicDistanceLabel(item)}
+                      </ThemedText>
+
+                      <View style={styles.ratingBlock}>
+                        <View style={styles.ratingLeft}>
+                          <AppIcon name="star" size={13} color="#F59E0B" />
+                          <ThemedText style={styles.ratingValue}>{ratingData.displayRating.toFixed(1)}</ThemedText>
+                        </View>
+                        <ThemedText style={styles.reviewText}>({ratingData.reviewCount} reviews)</ThemedText>
+                      </View>
+
+                      <View style={styles.ratingSelector}>
+                        {[1, 2, 3, 4, 5].map((value) => {
+                          const isActive = value <= userRating;
+                          return (
+                            <TouchableOpacity
+                              key={`${item.id}-star-${value}`}
+                              style={styles.starButton}
+                              onPress={() => handleRateMechanic(item, value)}
+                              accessibilityLabel={`Rate ${item.name} ${value} star${value > 1 ? 's' : ''}`}
+                            >
+                              <AppIcon
+                                name="star"
+                                size={16}
+                                color={isActive ? '#F59E0B' : '#D1D5DB'}
+                              />
+                            </TouchableOpacity>
+                          );
+                        })}
+                        <ThemedText style={styles.ratingHint}>
+                          {userRating > 0 ? `Your rating: ${userRating}/5` : 'Tap to rate'}
+                        </ThemedText>
+                      </View>
+                    </View>
+
+                    <View style={styles.shopActions}>
+                      <TouchableOpacity
+                        style={styles.actionButton}
+                        onPress={() => handleChat(item)}
+                      >
+                        <AppIcon name="message" size={18} color="#FF8C42" style={styles.actionIcon} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.actionButton}
+                        onPress={() => handleCall(item)}
+                      >
+                        <AppIcon name="phone" size={18} color="#FF8C42" style={styles.actionIcon} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.actionButton}
+                        onPress={() => handleSMS(item)}
+                      >
+                        <AppIcon name="smartphone" size={18} color="#FF8C42" style={styles.actionIcon} />
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.availableBadge}>
+                      <ThemedText style={styles.availableText}>Available</ThemedText>
+                    </View>
                   </View>
 
-                  <View style={styles.shopActions}>
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => handleChat(item)}
-                    >
-                      <AppIcon name="message" size={18} color="#FF8C42" style={styles.actionIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => handleCall(item)}
-                    >
-                      <AppIcon name="phone" size={18} color="#FF8C42" style={styles.actionIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => handleSMS(item)}
-                    >
-                      <AppIcon name="smartphone" size={18} color="#FF8C42" style={styles.actionIcon} />
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={styles.availableBadge}>
-                    <ThemedText style={styles.availableText}>Available</ThemedText>
-                  </View>
+                  {/* Divider */}
+                  {index < filteredMechanics.length - 1 && (
+                    <View style={styles.divider} />
+                  )}
                 </View>
-
-                {/* Divider */}
-                {index < filteredMechanics.length - 1 && (
-                  <View style={styles.divider} />
-                )}
-              </View>
-            )}
+              );
+            }}
             ListHeaderComponent={
               filteredMechanics.length > 0 ? (
                 <View style={styles.shopsListWrapper} />
@@ -696,6 +937,42 @@ const styles = StyleSheet.create({
   shopDistance: {
     fontSize: 13,
     color: '#666',
+  },
+  ratingBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 8,
+  },
+  ratingLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  ratingValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  reviewText: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  ratingSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    gap: 6,
+    flexWrap: 'wrap',
+  },
+  starButton: {
+    padding: 2,
+  },
+  ratingHint: {
+    marginLeft: 8,
+    fontSize: 11,
+    color: '#6B7280',
+    fontWeight: '600',
   },
   shopActions: {
     flexDirection: 'row',

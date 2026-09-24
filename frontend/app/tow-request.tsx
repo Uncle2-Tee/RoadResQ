@@ -14,6 +14,7 @@ import { ThemedView } from '../components/themed-view';
 import { getMechanicShops } from '../services/api-client';
 import { getCachedDriverLocation, saveDriverLocation } from '../services/driver-location-cache';
 import { getLocationName } from '../services/location-label';
+import { calculateDistanceKm, getProviderDistanceText, isProviderAtDriverLocation } from '../services/location-geofence';
 import { calculateDistance } from '../services/location-service';
 import { recordTowRequest } from '../services/request-history-recorder';
 
@@ -80,6 +81,7 @@ export default function TowRequestScreen() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [arrivalStatus, setArrivalStatus] = useState<Record<string, { arrived: boolean; distanceKm: number; statusText: string }>>({});
   const [driverName, setDriverName] = useState((params.driverName as string) || 'Driver');
 
   const updateServices = useCallback(async (latitude: number, longitude: number, forceRefresh = false) => {
@@ -114,6 +116,29 @@ export default function TowRequestScreen() {
     });
     return () => { active = false; };
   }, [driverLocation]);
+
+  useEffect(() => {
+    if (!driverLocation || towServices.length === 0) {
+      return;
+    }
+
+    const nextStatus: Record<string, { arrived: boolean; distanceKm: number; statusText: string }> = {};
+
+    for (const service of towServices) {
+      const distanceKm = calculateDistanceKm(
+        driverLocation.latitude,
+        driverLocation.longitude,
+        service.latitude,
+        service.longitude
+      );
+      const arrived = isProviderAtDriverLocation(distanceKm);
+      const statusText = getProviderDistanceText(distanceKm, 'Tower');
+
+      nextStatus[service.id] = { arrived, distanceKm, statusText };
+    }
+
+    setArrivalStatus(nextStatus);
+  }, [driverLocation, towServices]);
 
   useEffect(() => {
     let active = true;
@@ -208,6 +233,20 @@ export default function TowRequestScreen() {
     }
   };
 
+  const getTowDistanceLabel = (service: TowService): string => {
+    if (!driverLocation) {
+      return `${service.name} is being tracked.`;
+    }
+
+    const distanceKm = calculateDistanceKm(
+      driverLocation.latitude,
+      driverLocation.longitude,
+      service.latitude,
+      service.longitude
+    );
+    return getProviderDistanceText(distanceKm, 'Tower');
+  };
+
   const handleChat = (service: TowService) => {
     router.push({
       pathname: '/mechanic-chat',
@@ -246,7 +285,7 @@ export default function TowRequestScreen() {
               </View>
             </View>
           </Marker>
-          {towServices.slice(0, 3).map((service, index) => <Marker key={service.id} coordinate={{ latitude: service.latitude, longitude: service.longitude }} title={service.name} description={`${service.distance.toFixed(1)} km away`} pinColor="#FF8C42" zIndex={500 - index} tracksViewChanges={false} />)}
+          {towServices.slice(0, 3).map((service, index) => <Marker key={service.id} coordinate={{ latitude: service.latitude, longitude: service.longitude }} title={service.name} description={getTowDistanceLabel(service)} pinColor="#FF8C42" zIndex={500 - index} tracksViewChanges={false} />)}
         </MapView>}
         <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh} accessibilityLabel="Refresh towing services">
           {isRefreshing ? <ActivityIndicator size="small" color="#FF8C42" /> : <AppIcon name="refresh" size={22} color="#FF8C42" />}
@@ -272,7 +311,7 @@ export default function TowRequestScreen() {
                 <View style={styles.shopLocationMetaRow}>
                   <ThemedText style={styles.shopLocation} numberOfLines={1}>{item.location || 'Location not provided'}</ThemedText>
                   <View style={styles.metaPill}>
-                    <ThemedText style={styles.metaPillText}>{item.distance.toFixed(1)} km away</ThemedText>
+                    <ThemedText style={styles.metaPillText}>{getTowDistanceLabel(item)}</ThemedText>
                   </View>
                   <View style={styles.metaPillSoft}>
                     <ThemedText style={styles.metaPillSoftText}>Verified location</ThemedText>

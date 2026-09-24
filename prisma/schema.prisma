@@ -27,6 +27,9 @@ model User {
   driverRequests         RequestHistory[]     @relation("DriverRequests")
   mechanicRequests       RequestHistory[]     @relation("MechanicRequests")
   towShops               TowShop[]            @relation("TowShopOwner")
+  driverReviews          ProviderReview[]     @relation("DriverReviews")
+  driverLocationTracks   DriverLocationTrack[] @relation("DriverLocationTracks")
+  providerLocationTracks ProviderLocationTrack[] @relation("ProviderLocationTracks")
 
   @@map("Users")
 }
@@ -111,6 +114,7 @@ model MechanicShop {
   paystackSubaccountCode String?
   approvalStatus         String   @default("approved")
   mechanic               User?    @relation("MechanicShopOwner", fields: [mechanicId], references: [id], map: "MechanicShop_mechanicId_fkey")
+  providerReviews        ProviderReview[] @relation("MechanicShopReviews")
 
   @@index([mechanicId])
   @@index([status])
@@ -145,6 +149,7 @@ model TowShop {
   createdAt              DateTime @default(now())
   updatedAt              DateTime @default(now()) @updatedAt
   mechanic               User?    @relation("TowShopOwner", fields: [mechanicId], references: [id])
+  providerReviews        ProviderReview[] @relation("TowShopReviews")
 
   @@index([mechanicId])
   @@index([status])
@@ -190,6 +195,56 @@ model Payment {
   @@index([releaseStatus])
 }
 
+model ProviderReview {
+  id            String       @id @default(cuid())
+  driverId      String
+  providerType  ProviderType
+  providerId    String
+  mechanicShopId String?
+  towShopId     String?
+  rating        Int
+  reviewText    String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  driver        User         @relation("DriverReviews", fields: [driverId], references: [id], onDelete: Cascade)
+  mechanicShop  MechanicShop? @relation("MechanicShopReviews", fields: [mechanicShopId], references: [id], onDelete: SetNull)
+  towShop       TowShop?     @relation("TowShopReviews", fields: [towShopId], references: [id], onDelete: SetNull)
+
+  @@unique([driverId, providerType, providerId])
+  @@index([driverId])
+  @@index([providerType, providerId])
+  @@index([mechanicShopId])
+  @@index([towShopId])
+  @@map("ProviderReviews")
+}
+
+model DriverLocationTrack {
+  id         String   @id @default(cuid())
+  driverId   String
+  latitude   Decimal  @db.Decimal(10, 7)
+  longitude  Decimal  @db.Decimal(10, 7)
+  accuracy   Decimal? @db.Decimal(10, 2)
+  source     String   @default("gps")
+  recordedAt DateTime @default(now())
+  driver     User     @relation("DriverLocationTracks", fields: [driverId], references: [id], onDelete: Cascade)
+
+  @@index([driverId, recordedAt])
+  @@map("DriverLocationTracks")
+}
+
+model ProviderLocationTrack {
+  id         String   @id @default(cuid())
+  providerId String
+  latitude   Decimal  @db.Decimal(10, 7)
+  longitude  Decimal  @db.Decimal(10, 7)
+  accuracy   Decimal? @db.Decimal(10, 2)
+  recordedAt DateTime @default(now())
+  provider   User     @relation("ProviderLocationTracks", fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([providerId, recordedAt])
+  @@map("ProviderLocationTracks")
+}
+
 enum RequestType {
   SERVICE
   TOW
@@ -224,4 +279,9 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum ProviderType {
+  MECHANIC
+  TOW
 }

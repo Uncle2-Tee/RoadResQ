@@ -8,9 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push",
+    "db:push": "prisma db push && prisma generate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:baseline": "node scripts/baseline-migration.cjs",
     "db:split-shops": "node scripts/split-shop-tables.cjs",
-    "db:push:session": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$env:USE_DIRECT_URL='true'; prisma db push\""
+    "db:push:session": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$env:USE_DIRECT_URL='true'; prisma db push; prisma generate\""
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
@@ -24,6 +27,8 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.6",
     "prisma": "^7.8.0",
     "typescript": "^5.9.2"
   }

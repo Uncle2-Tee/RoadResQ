@@ -8,6 +8,7 @@ import { DriverRequestStatusWatcher } from '../components/driver-request-status-
 import { MechanicRequestSoundWatcher } from '../components/mechanic-request-sound-watcher';
 import { PushNotificationManager } from '../components/push-notification-manager';
 import { LocationBootstrap } from '../components/location-bootstrap';
+import { ProviderLocationReporter } from '../components/provider-location-reporter';
 import { useColorScheme } from '../hooks/use-color-scheme';
 
 export default function RootLayout() {
@@ -50,6 +51,7 @@ export default function RootLayout() {
       <MechanicRequestSoundWatcher />
       <PushNotificationManager />
       <LocationBootstrap />
+      <ProviderLocationReporter />
       <StatusBar style="auto" />
     </ThemeProvider>
   );

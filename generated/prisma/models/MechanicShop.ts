@@ -333,6 +333,7 @@ export type MechanicShopWhereInput = {
   paystackSubaccountCode?: Prisma.StringNullableFilter<"MechanicShop"> | string | null
   approvalStatus?: Prisma.StringFilter<"MechanicShop"> | string
   mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  providerReviews?: Prisma.ProviderReviewListRelationFilter
 }
 
 export type MechanicShopOrderByWithRelationInput = {
@@ -356,6 +357,7 @@ export type MechanicShopOrderByWithRelationInput = {
   paystackSubaccountCode?: Prisma.SortOrderInput | Prisma.SortOrder
   approvalStatus?: Prisma.SortOrder
   mechanic?: Prisma.UserOrderByWithRelationInput
+  providerReviews?: Prisma.ProviderReviewOrderByRelationAggregateInput
 }
 
 export type MechanicShopWhereUniqueInput = Prisma.AtLeast<{
@@ -382,6 +384,7 @@ export type MechanicShopWhereUniqueInput = Prisma.AtLeast<{
   paystackSubaccountCode?: Prisma.StringNullableFilter<"MechanicShop"> | string | null
   approvalStatus?: Prisma.StringFilter<"MechanicShop"> | string
   mechanic?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  providerReviews?: Prisma.ProviderReviewListRelationFilter
 }, "id" | "shopId" | "licenseNumber">
 
 export type MechanicShopOrderByWithAggregationInput = {
@@ -456,6 +459,7 @@ export type MechanicShopCreateInput = {
   paystackSubaccountCode?: string | null
   approvalStatus?: string
   mechanic?: Prisma.UserCreateNestedOneWithoutMechanicShopsInput
+  providerReviews?: Prisma.ProviderReviewCreateNestedManyWithoutMechanicShopInput
 }
 
 export type MechanicShopUncheckedCreateInput = {
@@ -478,6 +482,7 @@ export type MechanicShopUncheckedCreateInput = {
   accountName?: string | null
   paystackSubaccountCode?: string | null
   approvalStatus?: string
+  providerReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutMechanicShopInput
 }
 
 export type MechanicShopUpdateInput = {
@@ -500,6 +505,7 @@ export type MechanicShopUpdateInput = {
   paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   mechanic?: Prisma.UserUpdateOneWithoutMechanicShopsNestedInput
+  providerReviews?: Prisma.ProviderReviewUpdateManyWithoutMechanicShopNestedInput
 }
 
 export type MechanicShopUncheckedUpdateInput = {
@@ -522,6 +528,7 @@ export type MechanicShopUncheckedUpdateInput = {
   accountName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  providerReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutMechanicShopNestedInput
 }
 
 export type MechanicShopCreateManyInput = {
@@ -675,6 +682,11 @@ export type MechanicShopSumOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
 }
 
+export type MechanicShopNullableScalarRelationFilter = {
+  is?: Prisma.MechanicShopWhereInput | null
+  isNot?: Prisma.MechanicShopWhereInput | null
+}
+
 export type MechanicShopCreateNestedManyWithoutMechanicInput = {
   create?: Prisma.XOR<Prisma.MechanicShopCreateWithoutMechanicInput, Prisma.MechanicShopUncheckedCreateWithoutMechanicInput> | Prisma.MechanicShopCreateWithoutMechanicInput[] | Prisma.MechanicShopUncheckedCreateWithoutMechanicInput[]
   connectOrCreate?: Prisma.MechanicShopCreateOrConnectWithoutMechanicInput | Prisma.MechanicShopCreateOrConnectWithoutMechanicInput[]
@@ -725,6 +737,22 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
+export type MechanicShopCreateNestedOneWithoutProviderReviewsInput = {
+  create?: Prisma.XOR<Prisma.MechanicShopCreateWithoutProviderReviewsInput, Prisma.MechanicShopUncheckedCreateWithoutProviderReviewsInput>
+  connectOrCreate?: Prisma.MechanicShopCreateOrConnectWithoutProviderReviewsInput
+  connect?: Prisma.MechanicShopWhereUniqueInput
+}
+
+export type MechanicShopUpdateOneWithoutProviderReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.MechanicShopCreateWithoutProviderReviewsInput, Prisma.MechanicShopUncheckedCreateWithoutProviderReviewsInput>
+  connectOrCreate?: Prisma.MechanicShopCreateOrConnectWithoutProviderReviewsInput
+  upsert?: Prisma.MechanicShopUpsertWithoutProviderReviewsInput
+  disconnect?: Prisma.MechanicShopWhereInput | boolean
+  delete?: Prisma.MechanicShopWhereInput | boolean
+  connect?: Prisma.MechanicShopWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MechanicShopUpdateToOneWithWhereWithoutProviderReviewsInput, Prisma.MechanicShopUpdateWithoutProviderReviewsInput>, Prisma.MechanicShopUncheckedUpdateWithoutProviderReviewsInput>
+}
+
 export type MechanicShopCreateWithoutMechanicInput = {
   id?: string
   shopId: string
@@ -744,6 +772,7 @@ export type MechanicShopCreateWithoutMechanicInput = {
   accountName?: string | null
   paystackSubaccountCode?: string | null
   approvalStatus?: string
+  providerReviews?: Prisma.ProviderReviewCreateNestedManyWithoutMechanicShopInput
 }
 
 export type MechanicShopUncheckedCreateWithoutMechanicInput = {
@@ -765,6 +794,7 @@ export type MechanicShopUncheckedCreateWithoutMechanicInput = {
   accountName?: string | null
   paystackSubaccountCode?: string | null
   approvalStatus?: string
+  providerReviews?: Prisma.ProviderReviewUncheckedCreateNestedManyWithoutMechanicShopInput
 }
 
 export type MechanicShopCreateOrConnectWithoutMechanicInput = {
@@ -818,6 +848,110 @@ export type MechanicShopScalarWhereInput = {
   approvalStatus?: Prisma.StringFilter<"MechanicShop"> | string
 }
 
+export type MechanicShopCreateWithoutProviderReviewsInput = {
+  id?: string
+  shopId: string
+  shopName: string
+  phone: string
+  location: string
+  specialization: string
+  licenseNumber: string
+  latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankName?: string | null
+  bankCode?: string | null
+  accountNumber?: string | null
+  accountName?: string | null
+  paystackSubaccountCode?: string | null
+  approvalStatus?: string
+  mechanic?: Prisma.UserCreateNestedOneWithoutMechanicShopsInput
+}
+
+export type MechanicShopUncheckedCreateWithoutProviderReviewsInput = {
+  id?: string
+  shopId: string
+  mechanicId?: string | null
+  shopName: string
+  phone: string
+  location: string
+  specialization: string
+  licenseNumber: string
+  latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankName?: string | null
+  bankCode?: string | null
+  accountNumber?: string | null
+  accountName?: string | null
+  paystackSubaccountCode?: string | null
+  approvalStatus?: string
+}
+
+export type MechanicShopCreateOrConnectWithoutProviderReviewsInput = {
+  where: Prisma.MechanicShopWhereUniqueInput
+  create: Prisma.XOR<Prisma.MechanicShopCreateWithoutProviderReviewsInput, Prisma.MechanicShopUncheckedCreateWithoutProviderReviewsInput>
+}
+
+export type MechanicShopUpsertWithoutProviderReviewsInput = {
+  update: Prisma.XOR<Prisma.MechanicShopUpdateWithoutProviderReviewsInput, Prisma.MechanicShopUncheckedUpdateWithoutProviderReviewsInput>
+  create: Prisma.XOR<Prisma.MechanicShopCreateWithoutProviderReviewsInput, Prisma.MechanicShopUncheckedCreateWithoutProviderReviewsInput>
+  where?: Prisma.MechanicShopWhereInput
+}
+
+export type MechanicShopUpdateToOneWithWhereWithoutProviderReviewsInput = {
+  where?: Prisma.MechanicShopWhereInput
+  data: Prisma.XOR<Prisma.MechanicShopUpdateWithoutProviderReviewsInput, Prisma.MechanicShopUncheckedUpdateWithoutProviderReviewsInput>
+}
+
+export type MechanicShopUpdateWithoutProviderReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shopId?: Prisma.StringFieldUpdateOperationsInput | string
+  shopName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanic?: Prisma.UserUpdateOneWithoutMechanicShopsNestedInput
+}
+
+export type MechanicShopUncheckedUpdateWithoutProviderReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shopId?: Prisma.StringFieldUpdateOperationsInput | string
+  mechanicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shopName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type MechanicShopCreateManyMechanicInput = {
   id?: string
   shopId: string
@@ -858,6 +992,7 @@ export type MechanicShopUpdateWithoutMechanicInput = {
   accountName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  providerReviews?: Prisma.ProviderReviewUpdateManyWithoutMechanicShopNestedInput
 }
 
 export type MechanicShopUncheckedUpdateWithoutMechanicInput = {
@@ -879,6 +1014,7 @@ export type MechanicShopUncheckedUpdateWithoutMechanicInput = {
   accountName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paystackSubaccountCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  providerReviews?: Prisma.ProviderReviewUncheckedUpdateManyWithoutMechanicShopNestedInput
 }
 
 export type MechanicShopUncheckedUpdateManyWithoutMechanicInput = {
@@ -903,6 +1039,35 @@ export type MechanicShopUncheckedUpdateManyWithoutMechanicInput = {
 }
 
 
+/**
+ * Count Type MechanicShopCountOutputType
+ */
+
+export type MechanicShopCountOutputType = {
+  providerReviews: number
+}
+
+export type MechanicShopCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  providerReviews?: boolean | MechanicShopCountOutputTypeCountProviderReviewsArgs
+}
+
+/**
+ * MechanicShopCountOutputType without action
+ */
+export type MechanicShopCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MechanicShopCountOutputType
+   */
+  select?: Prisma.MechanicShopCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * MechanicShopCountOutputType without action
+ */
+export type MechanicShopCountOutputTypeCountProviderReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderReviewWhereInput
+}
+
 
 export type MechanicShopSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -925,6 +1090,8 @@ export type MechanicShopSelect<ExtArgs extends runtime.Types.Extensions.Internal
   paystackSubaccountCode?: boolean
   approvalStatus?: boolean
   mechanic?: boolean | Prisma.MechanicShop$mechanicArgs<ExtArgs>
+  providerReviews?: boolean | Prisma.MechanicShop$providerReviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.MechanicShopCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mechanicShop"]>
 
 export type MechanicShopSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -998,6 +1165,8 @@ export type MechanicShopSelectScalar = {
 export type MechanicShopOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shopId" | "mechanicId" | "shopName" | "phone" | "location" | "specialization" | "licenseNumber" | "latitude" | "longitude" | "status" | "createdAt" | "updatedAt" | "bankName" | "bankCode" | "accountNumber" | "accountName" | "paystackSubaccountCode" | "approvalStatus", ExtArgs["result"]["mechanicShop"]>
 export type MechanicShopInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   mechanic?: boolean | Prisma.MechanicShop$mechanicArgs<ExtArgs>
+  providerReviews?: boolean | Prisma.MechanicShop$providerReviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.MechanicShopCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MechanicShopIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   mechanic?: boolean | Prisma.MechanicShop$mechanicArgs<ExtArgs>
@@ -1010,6 +1179,7 @@ export type $MechanicShopPayload<ExtArgs extends runtime.Types.Extensions.Intern
   name: "MechanicShop"
   objects: {
     mechanic: Prisma.$UserPayload<ExtArgs> | null
+    providerReviews: Prisma.$ProviderReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1426,6 +1596,7 @@ readonly fields: MechanicShopFieldRefs;
 export interface Prisma__MechanicShopClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   mechanic<T extends Prisma.MechanicShop$mechanicArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MechanicShop$mechanicArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  providerReviews<T extends Prisma.MechanicShop$providerReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MechanicShop$providerReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1891,6 +2062,30 @@ export type MechanicShop$mechanicArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * MechanicShop.providerReviews
+ */
+export type MechanicShop$providerReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderReview
+   */
+  select?: Prisma.ProviderReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderReview
+   */
+  omit?: Prisma.ProviderReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderReviewInclude<ExtArgs> | null
+  where?: Prisma.ProviderReviewWhereInput
+  orderBy?: Prisma.ProviderReviewOrderByWithRelationInput | Prisma.ProviderReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderReviewScalarFieldEnum | Prisma.ProviderReviewScalarFieldEnum[]
 }
 
 /**
